@@ -10,9 +10,7 @@ public class SplitOrderService {
 
 
   public void calculateTotalPaidByEachParticipant(Order order) {
-
-    caculateTotalIndividualOfIncreasesAndDiscounts(order);
-
+    this.caculateTotalIndividualOfIncreasesAndDiscounts(order);
     order.getParticipants().forEach(participant -> {
       System.out.println(participant.getName() + ": R$" + participant.getFinancials().getTotalIndividualExpense());
     });
@@ -25,7 +23,7 @@ public class SplitOrderService {
     double totalIncreases = calculateTotalIncreasesOfOrder(order);
     double totalDiscounts = calculateTotalDiscountsOfOrder(order);
 
-    order.getParticipants().stream()
+    order.getParticipants()
         .forEach(participant -> {
           calculateSumPriceTotalOfItems(participant, totalPriceItemsOfOrder);
           calculateTotalIndividualIncrease(participant, totalIncreases);
