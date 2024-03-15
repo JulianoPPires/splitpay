@@ -8,5 +8,6 @@ import lombok.Data;
 public class Increase {
 
   private String name;
-  private double price;
+  private double value;
+  private boolean isPercentage;
 }

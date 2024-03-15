@@ -8,5 +8,7 @@ import lombok.Data;
 public class Discount {
 
   private String name;
-  private double price;
+  private double value;
+  private boolean isPercentage;
+
 }

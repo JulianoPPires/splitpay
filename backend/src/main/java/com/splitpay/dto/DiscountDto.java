@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class DiscountDto {
   private String name;
-  private double price;
+  private double value;
+  private boolean isPercentage;
 }

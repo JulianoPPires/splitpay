@@ -6,10 +6,7 @@ import com.splitpay.service.SplitOrderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -24,6 +21,7 @@ public class OrderController {
     this.modelMapper = modelMapper;
   }
 
+  @CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
   @PostMapping("/splitOrder")
   public ResponseEntity<Object> splitOrder(@RequestBody OrderDto orderDto) {
 

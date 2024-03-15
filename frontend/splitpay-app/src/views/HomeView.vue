@@ -11,18 +11,22 @@
         <h3>Participante {{ participantIndex + 1 }}</h3>
         <div class="form-group">
           <label for="participantName{{ participantIndex }}">Nome:</label>
-          <input type="text" v-model="participant.name" id="participantName{{ participantIndex }}" class="form-control" />
+          <input type="text" v-model="participant.name" id="participantName{{ participantIndex }}"
+            class="form-control" />
         </div>
       </div>
       <div class="participant-items">
         <div v-for="(item, itemIndex) in participant.items" :key="itemIndex">
-          <input type="text" v-model="item.name" :placeholder="'Nome do item ' + (itemIndex + 1)" class="form-control" />
+          <input type="text" v-model="item.name" :placeholder="'Nome do item ' + (itemIndex + 1)"
+            class="form-control" />
           <input type="number" v-model="item.value" :placeholder="'Valor ' + (itemIndex + 1)" class="form-control" />
-          <button @click="removeParticipantItem(participantIndex, itemIndex)" :disabled="itemIndex === 0 && participant.items.length === 1" class="btn btn-danger">Remover</button>
+          <button @click="removeParticipantItem(participantIndex, itemIndex)"
+            :disabled="itemIndex === 0 && participant.items.length === 1" class="btn btn-danger">Remover</button>
         </div>
         <button @click="addParticipantItem(participantIndex)" class="btn btn-primary">Adicionar Item</button>
       </div>
-      <button v-if="participantIndex > 0" @click="removeParticipant(participantIndex)" class="btn btn-danger">Remover Participante</button>
+      <button v-if="participantIndex > 0" @click="removeParticipant(participantIndex)" class="btn btn-danger">Remover
+        Participante</button>
     </div>
 
     <!-- Campo para gastos adicionais e descontos adicionais -->
@@ -30,14 +34,16 @@
       <!-- Campo para gastos adicionais -->
       <div class="additional-expenses">
         <h3>Gastos Adicionais</h3>
-        <div v-for="(expense, index) in additionalExpenses" :key="index" class="form-group">
-          <input type="text" v-model="expense.name" :placeholder="'Nome do gasto ' + (index + 1)" class="form-control" />
+        <div v-for="(expense, index) in increases" :key="index" class="form-group">
+          <input type="text" v-model="expense.name" :placeholder="'Nome do gasto ' + (index + 1)"
+            class="form-control" />
           <input type="text" v-model="expense.value" :placeholder="'Valor ' + (index + 1)" class="form-control" />
           <select v-model="expense.isPercentage" class="form-control">
             <option value="true">Porcentagem</option>
             <option value="false">Valor Fixo</option>
           </select>
-          <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && additionalExpenses.length === 1" class="btn btn-danger">Remover</button>
+          <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && increases.length === 1"
+            class="btn btn-danger">Remover</button>
         </div>
         <button @click="addExpense" class="btn btn-primary">Adicionar Gasto</button>
       </div>
@@ -45,14 +51,16 @@
       <!-- Campo para descontos adicionais -->
       <div class="additional-discounts">
         <h3>Descontos Adicionais</h3>
-        <div v-for="(discount, index) in additionalDiscounts" :key="index" class="form-group">
-          <input type="text" v-model="discount.name" :placeholder="'Nome do desconto ' + (index + 1)" class="form-control" />
+        <div v-for="(discount, index) in discounts" :key="index" class="form-group">
+          <input type="text" v-model="discount.name" :placeholder="'Nome do desconto ' + (index + 1)"
+            class="form-control" />
           <input type="text" v-model="discount.value" :placeholder="'Valor ' + (index + 1)" class="form-control" />
           <select v-model="discount.isPercentage" class="form-control">
             <option value="true">Porcentagem</option>
             <option value="false">Valor Fixo</option>
           </select>
-          <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && additionalDiscounts.length === 1" class="btn btn-danger">Remover</button>
+          <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && discounts.length === 1"
+            class="btn btn-danger">Remover</button>
         </div>
         <button @click="addDiscount" class="btn btn-primary">Adicionar Desconto</button>
       </div>
@@ -68,8 +76,8 @@ export default {
   data() {
     return {
       participants: [{ name: '', items: [{ name: '', value: '' }] }],
-      additionalExpenses: [{ name: '', value: '', isPercentage: false }],
-      additionalDiscounts: [{ name: '', value: '', isPercentage: false }]
+      increases: [{ name: '', value: '', isPercentage: false }],
+      discounts: [{ name: '', value: '', isPercentage: false }]
     };
   },
   methods: {
@@ -86,25 +94,49 @@ export default {
       this.participants[participantIndex].items.splice(itemIndex, 1);
     },
     addExpense() {
-      this.additionalExpenses.push({ name: '', value: '', isPercentage: false });
+      this.increases.push({ name: '', value: '', isPercentage: false });
     },
     removeAdditionalExpense(index) {
-      if (index > 0 || this.additionalExpenses.length > 1) {
-        this.additionalExpenses.splice(index, 1);
+      if (index > 0 || this.increases.length > 1) {
+        this.increases.splice(index, 1);
       }
     },
     addDiscount() {
-      this.additionalDiscounts.push({ name: '', value: '', isPercentage: false });
+      this.discounts.push({ name: '', value: '', isPercentage: false });
     },
     removeAdditionalDiscount(index) {
-      if (index > 0 || this.additionalDiscounts.length > 1) {
-        this.additionalDiscounts.splice(index, 1);
+      if (index > 0 || this.discounts.length > 1) {
+        this.discounts.splice(index, 1);
       }
     },
-    saveAndDivide() {
+    async saveAndDivide(e) {
+
+      e.preventDefault();
+
       console.log('Dados dos participantes:', this.participants);
-      console.log('Gastos Adicionais:', this.additionalExpenses);
-      console.log('Descontos Adicionais:', this.additionalDiscounts);
+      console.log('Gastos Adicionais:', this.increases);
+      console.log('Descontos Adicionais:', this.discounts);
+
+      const data = {
+        participants: this.participants,
+        increases: this.increases,
+        discounts: this.discounts
+      };
+
+      const dataJson = JSON.stringify(data);
+
+      console.log(dataJson);
+
+      const req = await fetch('http://localhost:8081/api/v1/order/splitOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: dataJson
+      })
+
+      const res = await req.json();
+      console.log(res);
     }
   }
 };

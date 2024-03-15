@@ -74,12 +74,12 @@ public class SplitOrderService {
 
   private double calculateTotalIncreasesOfOrder(Order order) {
 
-    return order.getIncreases().stream().mapToDouble(Increase::getPrice).sum();
+    return order.getIncreases().stream().mapToDouble(Increase::getValue).sum();
   }
 
   private double calculateTotalDiscountsOfOrder(Order order) {
 
-    return order.getDiscounts().stream().mapToDouble(Discount::getPrice).sum();
+    return order.getDiscounts().stream().mapToDouble(Discount::getValue).sum();
 
   }
 
@@ -87,7 +87,7 @@ public class SplitOrderService {
   private double calculateSumPriceTotalOfItems(List<Item> items) {
 
     return items.stream()
-        .mapToDouble(Item::getPrice)
+        .mapToDouble(Item::getValue)
         .sum();
   }
 
@@ -96,7 +96,7 @@ public class SplitOrderService {
 
     return order.getParticipants().stream()
         .flatMap(participant -> participant.getItems().stream())
-        .mapToDouble(Item::getPrice)
+        .mapToDouble(Item::getValue)
         .sum();
 
   }

@@ -6,5 +6,5 @@ import lombok.Data;
 public class ItemDto {
   private String name;
 
-  private double price;
+  private double value;
 }
