@@ -3,7 +3,6 @@ package com.splitpay.service;
 import com.splitpay.model.*;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 @Service
@@ -21,22 +20,58 @@ public class SplitOrderService {
   }
 
   private void caculateTotalIndividualOfIncreasesAndDiscounts(Order order) {
+
     double totalPriceItemsOfOrder = calculateSumTotalItemsOfOrder(order);
     double totalIncreases = calculateTotalIncreasesOfOrder(order);
     double totalDiscounts = calculateTotalDiscountsOfOrder(order);
 
     order.getParticipants().stream()
         .forEach(participant -> {
-          participant.getFinancials().setSumPriceTotalOfItems(calculateSumPriceTotalOfItems(participant.getItems()));
-          participant.getFinancials().setIndividualPercentage((participant.getFinancials().getSumPriceTotalOfItems() / totalPriceItemsOfOrder ));
-          participant.getFinancials().setTotalIndividualIncrease((participant.getFinancials().getIndividualPercentage()) * totalIncreases);
-          participant.getFinancials().setTotalIndividualDiscount((participant.getFinancials().getIndividualPercentage()) * totalDiscounts);
-          double differenceIncreaseAndDiscount = participant.getFinancials().getTotalIndividualIncrease() - participant.getFinancials().getTotalIndividualDiscount();
-          participant.getFinancials().setAmountsToBePaid(Math.abs(differenceIncreaseAndDiscount));
-          double totalPaidParticipant = (participant.getFinancials().getSumPriceTotalOfItems() - participant.getFinancials().getAmountsToBePaid());
-          double roundedNumber = Math.round(totalPaidParticipant * 100.0) / 100.0;
-          participant.getFinancials().setTotalIndividualExpense(roundedNumber);
+          calculateSumPriceTotalOfItems(participant, totalPriceItemsOfOrder);
+          calculateTotalIndividualIncrease(participant, totalIncreases);
+          calculateTotalIndividualDiscount(participant, totalDiscounts);
+          calculateDifferenceIncreaseAndDiscount(participant);
+          calculateTotalIndividualExpense(participant);
+
         });
+  }
+
+  private void calculateSumPriceTotalOfItems(Participant participant, double totalPriceItemsOfOrder) {
+
+    ParticipantFinancials financials = participant.getFinancials();
+    double sumPriceTotalOfItems = calculateSumPriceTotalOfItems(participant.getItems());
+    financials.setSumPriceTotalOfItems(sumPriceTotalOfItems);
+    double individualPercentage = sumPriceTotalOfItems / totalPriceItemsOfOrder;
+    financials.setIndividualPercentage(individualPercentage);
+  }
+
+  private void calculateTotalIndividualIncrease(Participant participant, double totalIncreases) {
+
+    ParticipantFinancials financials = participant.getFinancials();
+    double totalIndividualIncrease = financials.getIndividualPercentage() * totalIncreases;
+    financials.setTotalIndividualIncrease(totalIndividualIncrease);
+  }
+
+  private void calculateTotalIndividualDiscount(Participant participant, double totalDiscounts) {
+
+    ParticipantFinancials financials = participant.getFinancials();
+    double totalIndividualDiscount = financials.getIndividualPercentage() * totalDiscounts;
+    financials.setTotalIndividualDiscount(totalIndividualDiscount);
+  }
+
+  private void calculateDifferenceIncreaseAndDiscount(Participant participant) {
+
+    ParticipantFinancials financials = participant.getFinancials();
+    double differenceIncreaseAndDiscount = financials.getTotalIndividualIncrease() - financials.getTotalIndividualDiscount();
+    financials.setDifferenceIncreaseAndDiscountIndividual(Math.abs(differenceIncreaseAndDiscount));
+  }
+
+  private void calculateTotalIndividualExpense(Participant participant) {
+
+    ParticipantFinancials financials = participant.getFinancials();
+    double totalPaidParticipant = financials.getSumPriceTotalOfItems() - financials.getDifferenceIncreaseAndDiscountIndividual();
+    double totalIndividualExpense = Math.round(totalPaidParticipant * 100.0) / 100.0;
+    financials.setTotalIndividualExpense(totalIndividualExpense);
   }
 
   private double calculateTotalIncreasesOfOrder(Order order) {

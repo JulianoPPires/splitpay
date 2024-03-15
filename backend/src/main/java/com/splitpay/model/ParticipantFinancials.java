@@ -12,6 +12,6 @@ public class ParticipantFinancials {
   private double totalIndividualIncrease;
   private double totalIndividualDiscount;
   private double individualPercentage;
-  private double amountsToBePaid;
+  private double differenceIncreaseAndDiscountIndividual;
   private double sumPriceTotalOfItems;
 }
