@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParticipantFinancials {
-  private double individualExpense;
-  private double totalAmountIncrease;
-  private double totalAmountDiscount;
+  private double totalIndividualExpense;
+  private double totalIndividualIncrease;
+  private double totalIndividualDiscount;
   private double individualPercentage;
   private double amountsToBePaid;
   private double sumPriceTotalOfItems;

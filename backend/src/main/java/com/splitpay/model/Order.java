@@ -15,4 +15,10 @@ public class Order {
 
   private List<Increase> increases;
   private List<Discount> discounts;
+
+  private double totalPriceOrder;
+
+  private double totalPriceIncreases;
+
+  private double totalPriceDiscounts;
 }

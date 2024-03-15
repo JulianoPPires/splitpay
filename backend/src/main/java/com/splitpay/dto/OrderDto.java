@@ -2,7 +2,6 @@ package com.splitpay.dto;
 
 import com.splitpay.model.Discount;
 import com.splitpay.model.Increase;
-import com.splitpay.model.OrderItem;
 
 import java.util.List;
 
