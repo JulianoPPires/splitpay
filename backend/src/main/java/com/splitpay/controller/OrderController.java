@@ -22,13 +22,14 @@ public class OrderController {
   }
 
   @CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
-  @PostMapping("/splitOrder")
+  @PostMapping(value ="/splitOrder", produces = "application/json")
   public ResponseEntity<Object> splitOrder(@RequestBody OrderDto orderDto) {
 
     Order order = modelMapper.map(orderDto, Order.class);
 
     splitOrderService.calculateTotalPaidByEachParticipant(order);
 
-    return new ResponseEntity<>("Divisão do pedido realizada com sucesso", HttpStatus.OK);
+
+    return new ResponseEntity<>("{}", HttpStatus.OK);
   }
 }

@@ -21,12 +21,11 @@
             class="form-control" />
           <input type="number" v-model="item.value" :placeholder="'Valor ' + (itemIndex + 1)" class="form-control" />
           <button @click="removeParticipantItem(participantIndex, itemIndex)"
-            :disabled="itemIndex === 0 && participant.items.length === 1" class="btn btn-danger">Remover</button>
+            :disabled="itemIndex === 0 && participant.items.length === 1" class="btn btn-danger">-</button>
         </div>
-        <button @click="addParticipantItem(participantIndex)" class="btn btn-primary">Adicionar Item</button>
+        <button @click="addParticipantItem(participantIndex)" class="btn btn-primary">+</button>
       </div>
-      <button v-if="participantIndex > 0" @click="removeParticipant(participantIndex)" class="btn btn-danger">Remover
-        Participante</button>
+      <button v-if="participantIndex > 0" @click="removeParticipant(participantIndex)" class="btn btn-danger">-</button>
     </div>
 
     <!-- Campo para gastos adicionais e descontos adicionais -->
@@ -43,9 +42,9 @@
             <option value="false">Valor Fixo</option>
           </select>
           <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && increases.length === 1"
-            class="btn btn-danger">Remover</button>
+            class="btn btn-danger">-</button>
         </div>
-        <button @click="addExpense" class="btn btn-primary">Adicionar Gasto</button>
+        <button @click="addExpense" class="btn btn-primary">+</button>
       </div>
 
       <!-- Campo para descontos adicionais -->
@@ -60,9 +59,9 @@
             <option value="false">Valor Fixo</option>
           </select>
           <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && discounts.length === 1"
-            class="btn btn-danger">Remover</button>
+            class="btn btn-danger">-</button>
         </div>
-        <button @click="addDiscount" class="btn btn-primary">Adicionar Desconto</button>
+        <button @click="addDiscount" class="btn btn-primary">+</button>
       </div>
     </div>
 
@@ -113,6 +112,11 @@ export default {
 
       e.preventDefault();
 
+      if (this.participants.length < 2) {
+        alert('Por favor, adicione pelo menos dois participantes para realizar a divisao dos valores.');
+        return;
+      }
+
       console.log('Dados dos participantes:', this.participants);
       console.log('Gastos Adicionais:', this.increases);
       console.log('Descontos Adicionais:', this.discounts);
@@ -127,7 +131,7 @@ export default {
 
       console.log(dataJson);
 
-      const req = await fetch('http://localhost:8081/api/v1/order/splitOrder', {
+      const req = await fetch('http://localhost:8080/api/v1/order/splitOrder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
