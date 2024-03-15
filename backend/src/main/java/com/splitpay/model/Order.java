@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Order {
 
-  private List<OrderItem> orderItems;
+  private List<Participant> participants;
 
   private List<Increase> increases;
   private List<Discount> discounts;

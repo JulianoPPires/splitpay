@@ -6,11 +6,12 @@ import com.splitpay.model.OrderItem;
 
 import java.util.List;
 
+import com.splitpay.model.Participant;
 import lombok.Data;
 
 @Data
 public class OrderDto {
-  private List<OrderItem> orderItems;
+  private List<Participant> participants;
 
   private List<Increase> increases;
   private List<Discount> discounts;

@@ -29,7 +29,7 @@ public class OrderController {
 
     Order order = modelMapper.map(orderDto, Order.class);
 
-    splitOrderService.calculateTotalToBePaidByEachParticipant(order);
+    splitOrderService.calculateTotalPaidByEachParticipant(order);
 
     return new ResponseEntity<>("Divisão do pedido realizada com sucesso", HttpStatus.OK);
   }
