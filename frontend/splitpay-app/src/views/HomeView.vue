@@ -1,70 +1,79 @@
 <template>
   <div class="container">
-    <!-- Participantes -->
-    <div class="section-box">
-      <h1 class="title">Lista de Pessoas e Itens para Divisão</h1>
-      <!-- Botões para adicionar e remover participantes -->
-      <div class="btn-group">
-        <button @click="addParticipant" class="btn-add btn-add-green"><i class="fas fa-user-plus"></i>Pessoa</button>
-        <button v-if="participants.length > 2" @click="removeParticipant(participants.length - 1)" class="btn-remove btn-remove-red"><i class="fas fa-user-times"></i>Pessoa</button>
-        <button v-else class="btn-remove btn-remove-red" disabled><i class="fas fa-user-times"></i>Pessoa</button>
-      </div>
-      <!-- Formulário para cada participante -->
-      <div v-for="(participant, participantIndex) in participants" :key="participantIndex" class="participant-section">
-        <div class="participant-info">
-          <div class="form-group">
-            <input type="text" v-model="participant.name" :placeholder="'Nome da Pessoa '" :id="'participantName' + participantIndex" class="input" />
+    <div class="two-column-grid">
+      <!-- Participantes -->
+      <div class="section-box">
+        <h1 class="title">Lista de Pessoas e Itens para Divisão</h1>
+        <!-- Botões para adicionar e remover participantes -->
+        <div class="btn-group">
+          <button @click="addParticipant" class="btn-add btn-add-green"><i class="fas fa-user-plus"></i> Pessoa</button>
+          <button v-if="participants.length > 2" @click="removeParticipant(participants.length - 1)" class="btn-remove btn-remove-red"><i class="fas fa-user-times"></i> Pessoa</button>
+          <button v-else class="btn-remove btn-remove-red" disabled><i class="fas fa-user-times"></i> Pessoa</button>
+        </div>
+        <!-- Formulário para cada participante -->
+        <div v-for="(participant, participantIndex) in participants" :key="participantIndex" class="participant-section">
+          <div class="participant-info-box">
+            <div class="participant-info">
+              <div class="pessoas-itens-box">
+              <div class="form-group">
+                <input type="text" v-model="participant.name" :placeholder="'Nome da Pessoa '" :id="'participantName' + participantIndex" class="input input-small" />
+              </div>
+              <div class="item-group" v-for="(item, itemIndex) in participant.items" :key="itemIndex">
+                <input type="text" v-model="item.name" :placeholder="'Nome do item '" class="input input-small" />
+                <input type="number" v-model="item.value" :placeholder="'Valor do item'" class="input input-small" @input="validateValue(participantIndex, itemIndex)" />
+                <div class="btn-group">
+                  <button @click="addParticipantItem(participantIndex)" v-if="itemIndex === participant.items.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Item</button>
+                  <button @click="removeParticipantItem(participantIndex, itemIndex)" :disabled="itemIndex === 0 && participant.items.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Item</button>
+                </div>
+              </div>
+              </div>
+            </div>
           </div>
-          <div class="item-group" v-for="(item, itemIndex) in participant.items" :key="itemIndex">
-            <input type="text" v-model="item.name" :placeholder="'Nome do item '" class="input" />
-            <input type="number" v-model="item.value" :placeholder="'Valor do item'" class="input" @input="validateValue(participantIndex, itemIndex)" />
-            <div class="btn-group">
-              <button @click="addParticipantItem(participantIndex)" v-if="itemIndex === participant.items.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Item</button>
-              <button @click="removeParticipantItem(participantIndex, itemIndex)" :disabled="itemIndex === 0 && participant.items.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Item</button>
+        </div>
+      </div>
+      <!-- Gastos adicionais -->
+      <div class="section-box">
+        <h2 class="title">Gastos Adicionais do Grupo</h2>
+        <div class="additional-section">
+          <div class="additional-expenses-box">
+            <div class="additional-expenses">
+              <div v-for="(expense, index) in increases" :key="index" class="form-group">
+                <input type="text" v-model="expense.name" :placeholder="'Nome do gasto ' + (index + 1)" class="input input-small" />
+                <input type="text" v-model="expense.value" :placeholder="'Valor do gasto' + (index + 1)" class="input input-small" />
+                <select v-model="expense.isPercentage" class="input input-small">
+                  <option value="true">Porcentagem</option>
+                  <option value="false">Valor Fixo</option>
+                </select>
+                <div class="btn-group">
+                  <button @click="addExpense" v-if="index === increases.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Gasto</button>
+                  <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && increases.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Gasto</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- Descontos adicionais -->
+        <h2 class="title">Descontos Adicionais do Grupo</h2>
+        <div class="additional-section">
+          <div class="additional-discounts-box">
+            <div class="additional-discounts">
+              <div v-for="(discount, index) in discounts" :key="index" class="form-group">
+                <input type="text" v-model="discount.name" :placeholder="'Nome do desconto ' + (index + 1)" class="input input-small" />
+                <input type="text" v-model="discount.value" :placeholder="'Valor do desconto' + (index + 1)" class="input input-small" />
+                <select v-model="discount.isPercentage" class="input input-small">
+                  <option value="true">Porcentagem</option>
+                  <option value="false">Valor Fixo</option>
+                </select>
+                <div class="btn-group">
+                  <button @click="addDiscount" v-if="index === discounts.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Desconto</button>
+                  <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && discounts.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Desconto</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Gastos adicionais e Descontos adicionais -->
-    <div class="section-box">
-      <h2 class="title">Gastos e Descontos Adicionais do Grupo</h2>
-      <!-- Campo para gastos adicionais -->
-      <div class="additional-section">
-        <div class="additional-expenses">
-          <div v-for="(expense, index) in increases" :key="index" class="form-group">
-            <input type="text" v-model="expense.name" :placeholder="'Nome do gasto ' + (index + 1)" class="input" />
-            <input type="text" v-model="expense.value" :placeholder="'Valor do gasto' + (index + 1)" class="input" />
-            <select v-model="expense.isPercentage" class="input">
-              <option value="true">Porcentagem</option>
-              <option value="false">Valor Fixo</option>
-            </select>
-            <div class="btn-group">
-              <button @click="addExpense" v-if="index === increases.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Gasto</button>
-              <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && increases.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Gasto</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Campo para descontos adicionais -->
-        <div class="additional-discounts">
-          <div v-for="(discount, index) in discounts" :key="index" class="form-group">
-            <input type="text" v-model="discount.name" :placeholder="'Nome do desconto ' + (index + 1)" class="input" />
-            <input type="text" v-model="discount.value" :placeholder="'Valor do desconto' + (index + 1)" class="input" />
-            <select v-model="discount.isPercentage" class="input">
-              <option value="true">Porcentagem</option>
-              <option value="false">Valor Fixo</option>
-            </select>
-            <div class="btn-group">
-              <button @click="addDiscount" v-if="index === discounts.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Desconto</button>
-              <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && discounts.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Desconto</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Botão para dividir os gastos entre os participantes -->
     <button @click="saveAndDivide" class="btn-primary btn-divide-blue">Dividir os gastos entre os participantes</button>
   </div>
@@ -162,34 +171,37 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 600px;
+  max-width: 800px; /* Ajuste a largura conforme necessário */
   margin: 0 auto;
   padding: 20px;
 }
 
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 }
 
 .section-box {
   border: 1px solid #ddd;
-  padding: 20px;
+  padding: 15px;
   border-radius: 5px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Centraliza verticalmente */
+  margin-bottom: 15px;
+}
+
+.two-column-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .participant-section,
 .additional-section {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .participant-title,
 .additional-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   margin-bottom: 5px;
 }
@@ -199,33 +211,37 @@ export default {
 }
 
 .input {
-  width: calc(100% - 40px);
-  padding: 8px;
-  margin-bottom: 8px;
+  width: calc(100% - 30px);
+  padding: 6px;
+  margin-bottom: 6px;
   border: 1px solid #ddd;
   border-radius: 3px;
-  font-size: 14px;
+  font-size: 12px;
+}
+
+.input-small {
+  width: calc(50% - 10px);
 }
 
 .item-group {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .btn-group {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 15px;
 }
 
 .btn-add,
 .btn-remove {
   background-color:#2ecc71; 
   color: #fff;
-  padding: 8px;
+  padding: 6px;
   cursor: pointer;
   border-radius: 3px;
-  width: calc(50% - 6px);
-  font-size: 14px;
+  width: calc(30% - 4px);
+  font-size: 12px;
   text-align: center;
 }
 
@@ -237,13 +253,13 @@ export default {
 .btn-primary {
   background-color: #0073b1; 
   color: #fff;
-  padding: 12px;
+  padding: 10px;
   cursor: pointer;
   border-radius: 3px;
   display: block;
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
-  font-size: 16px;
+  font-size: 14px;
   text-align: center;
 }
 
@@ -266,5 +282,15 @@ export default {
 
 .btn-divide-blue:hover {
   background-color: #005684; 
+}
+
+/* Estilo para as caixas */
+.pessoas-itens-box,
+.additional-expenses-box,
+.additional-discounts-box {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 8px;
+  margin-top: 8px;
 }
 </style>
