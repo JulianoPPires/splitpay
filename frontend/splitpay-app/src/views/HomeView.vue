@@ -3,7 +3,7 @@
     <div class="two-column-grid">
       <!-- Participantes -->
       <div class="section-box">
-        <h1 class="title">Lista de Pessoas e Itens para Divisão</h1>
+        <h1 class="title">Informe as Pessoas e os Itens Comprados</h1>
         <!-- Botões para adicionar e remover participantes -->
         <div class="btn-group">
           <button @click="addParticipant" class="btn-add btn-add-green"><i class="fas fa-user-plus"></i> Pessoa</button>
@@ -33,7 +33,7 @@
       </div>
       <!-- Gastos adicionais -->
       <div class="section-box">
-        <h2 class="title">Gastos Adicionais do Grupo</h2>
+        <h2 class="title">Informe os Gastos Adicionais do Grupo</h2>
         <div class="additional-section">
           <div class="additional-expenses-box">
             <div class="additional-expenses">
@@ -53,7 +53,7 @@
           </div>
         </div>
       <!-- Descontos adicionais -->
-        <h2 class="title">Descontos Adicionais do Grupo</h2>
+        <h2 class="title">Informe os Descontos Adicionais do Grupo</h2>
         <div class="additional-section">
           <div class="additional-discounts-box">
             <div class="additional-discounts">
@@ -124,8 +124,9 @@ export default {
     async saveAndDivide(e) {
       e.preventDefault();
 
-      if (this.participants.length < 2) {
-        alert('Por favor, adicione pelo menos dois participantes para realizar a divisão dos valores.');
+      // Validar se todos os campos estão preenchidos
+      if (!this.validateForm()) {
+        alert('Por favor, preencha todos os campos corretamente.');
         return;
       }
 
@@ -164,6 +165,16 @@ export default {
         // Se for um número positivo, atualiza o valor
         this.participants[participantIndex].items[itemIndex].value = value.toString();
       }
+    },
+    validateForm() {
+      // Verifica se todos os campos estão preenchidos
+      for (let participant of this.participants) {
+        if (participant.name.trim() === '') return false;
+        for (let item of participant.items) {
+          if (item.name.trim() === '' || item.value.trim() === '') return false;
+        }
+      }
+      return true;
     }
   }
 };
