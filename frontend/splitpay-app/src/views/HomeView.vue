@@ -1,72 +1,72 @@
 <template>
   <div class="container">
-    <h2>Gastos para dividir entre os Participantes</h2>
-
-    <!-- Botão para adicionar participante -->
-    <button @click="addParticipant" class="btn btn-success">Adicionar Participante</button>
-
-    <!-- Formulário para cada participante -->
-    <div v-for="(participant, participantIndex) in participants" :key="participantIndex" class="participant-section">
-      <div class="participant-info">
-        <h3>Participante {{ participantIndex + 1 }}</h3>
-        <div class="form-group">
-          <label for="participantName{{ participantIndex }}">Nome:</label>
-          <input type="text" v-model="participant.name" id="participantName{{ participantIndex }}"
-            class="form-control" />
+    <!-- Participantes -->
+    <div class="section-box">
+      <h1 class="title">Lista de Pessoas e Itens para Divisão</h1>
+      <!-- Botões para adicionar e remover participantes -->
+      <div class="btn-group">
+        <button @click="addParticipant" class="btn-add btn-add-green"><i class="fas fa-user-plus"></i>Pessoa</button>
+        <button v-if="participants.length > 2" @click="removeParticipant(participants.length - 1)" class="btn-remove btn-remove-red"><i class="fas fa-user-times"></i>Pessoa</button>
+        <button v-else class="btn-remove btn-remove-red" disabled><i class="fas fa-user-times"></i>Pessoa</button>
+      </div>
+      <!-- Formulário para cada participante -->
+      <div v-for="(participant, participantIndex) in participants" :key="participantIndex" class="participant-section">
+        <div class="participant-info">
+          <div class="form-group">
+            <input type="text" v-model="participant.name" :placeholder="'Nome da Pessoa '" :id="'participantName' + participantIndex" class="input" />
+          </div>
+          <div class="item-group" v-for="(item, itemIndex) in participant.items" :key="itemIndex">
+            <input type="text" v-model="item.name" :placeholder="'Nome do item '" class="input" />
+            <input type="number" v-model="item.value" :placeholder="'Valor do item'" class="input" @input="validateValue(participantIndex, itemIndex)" />
+            <div class="btn-group">
+              <button @click="addParticipantItem(participantIndex)" v-if="itemIndex === participant.items.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Item</button>
+              <button @click="removeParticipantItem(participantIndex, itemIndex)" :disabled="itemIndex === 0 && participant.items.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Item</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="participant-items">
-        <div v-for="(item, itemIndex) in participant.items" :key="itemIndex">
-          <input type="text" v-model="item.name" :placeholder="'Nome do item ' + (itemIndex + 1)"
-            class="form-control" />
-          <input type="number" v-model="item.value" :placeholder="'Valor ' + (itemIndex + 1)" class="form-control" />
-          <button @click="removeParticipantItem(participantIndex, itemIndex)"
-            :disabled="itemIndex === 0 && participant.items.length === 1" class="btn btn-danger">-</button>
-        </div>
-        <button @click="addParticipantItem(participantIndex)" class="btn btn-primary">+</button>
-      </div>
-      <button v-if="participantIndex > 0" @click="removeParticipant(participantIndex)" class="btn btn-danger">-</button>
     </div>
 
-    <!-- Campo para gastos adicionais e descontos adicionais -->
-    <div class="additional-section">
+    <!-- Gastos adicionais e Descontos adicionais -->
+    <div class="section-box">
+      <h2 class="title">Gastos e Descontos Adicionais do Grupo</h2>
       <!-- Campo para gastos adicionais -->
-      <div class="additional-expenses">
-        <h3>Gastos Adicionais</h3>
-        <div v-for="(expense, index) in increases" :key="index" class="form-group">
-          <input type="text" v-model="expense.name" :placeholder="'Nome do gasto ' + (index + 1)"
-            class="form-control" />
-          <input type="text" v-model="expense.value" :placeholder="'Valor ' + (index + 1)" class="form-control" />
-          <select v-model="expense.isPercentage" class="form-control">
-            <option value="true">Porcentagem</option>
-            <option value="false">Valor Fixo</option>
-          </select>
-          <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && increases.length === 1"
-            class="btn btn-danger">-</button>
+      <div class="additional-section">
+        <div class="additional-expenses">
+          <div v-for="(expense, index) in increases" :key="index" class="form-group">
+            <input type="text" v-model="expense.name" :placeholder="'Nome do gasto ' + (index + 1)" class="input" />
+            <input type="text" v-model="expense.value" :placeholder="'Valor do gasto' + (index + 1)" class="input" />
+            <select v-model="expense.isPercentage" class="input">
+              <option value="true">Porcentagem</option>
+              <option value="false">Valor Fixo</option>
+            </select>
+            <div class="btn-group">
+              <button @click="addExpense" v-if="index === increases.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Gasto</button>
+              <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && increases.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Gasto</button>
+            </div>
+          </div>
         </div>
-        <button @click="addExpense" class="btn btn-primary">+</button>
-      </div>
 
-      <!-- Campo para descontos adicionais -->
-      <div class="additional-discounts">
-        <h3>Descontos Adicionais</h3>
-        <div v-for="(discount, index) in discounts" :key="index" class="form-group">
-          <input type="text" v-model="discount.name" :placeholder="'Nome do desconto ' + (index + 1)"
-            class="form-control" />
-          <input type="text" v-model="discount.value" :placeholder="'Valor ' + (index + 1)" class="form-control" />
-          <select v-model="discount.isPercentage" class="form-control">
-            <option value="true">Porcentagem</option>
-            <option value="false">Valor Fixo</option>
-          </select>
-          <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && discounts.length === 1"
-            class="btn btn-danger">-</button>
+        <!-- Campo para descontos adicionais -->
+        <div class="additional-discounts">
+          <div v-for="(discount, index) in discounts" :key="index" class="form-group">
+            <input type="text" v-model="discount.name" :placeholder="'Nome do desconto ' + (index + 1)" class="input" />
+            <input type="text" v-model="discount.value" :placeholder="'Valor do desconto' + (index + 1)" class="input" />
+            <select v-model="discount.isPercentage" class="input">
+              <option value="true">Porcentagem</option>
+              <option value="false">Valor Fixo</option>
+            </select>
+            <div class="btn-group">
+              <button @click="addDiscount" v-if="index === discounts.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Desconto</button>
+              <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && discounts.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Desconto</button>
+            </div>
+          </div>
         </div>
-        <button @click="addDiscount" class="btn btn-primary">+</button>
       </div>
     </div>
 
     <!-- Botão para dividir os gastos entre os participantes -->
-    <button @click="saveAndDivide" class="btn btn-primary">Dividir os gastos entre os participantes</button>
+    <button @click="saveAndDivide" class="btn-primary btn-divide-blue">Dividir os gastos entre os participantes</button>
   </div>
 </template>
 
@@ -74,10 +74,14 @@
 export default {
   data() {
     return {
-      participants: [{ name: '', items: [{ name: '', value: '' }] }],
+      participants: [],
       increases: [{ name: '', value: '', isPercentage: false }],
       discounts: [{ name: '', value: '', isPercentage: false }]
     };
+  },
+  created() {
+    this.addParticipant(); // Adiciona o primeiro participante e segundo
+    this.addParticipant(); 
   },
   methods: {
     addParticipant() {
@@ -109,11 +113,10 @@ export default {
       }
     },
     async saveAndDivide(e) {
-
       e.preventDefault();
 
       if (this.participants.length < 2) {
-        alert('Por favor, adicione pelo menos dois participantes para realizar a divisao dos valores.');
+        alert('Por favor, adicione pelo menos dois participantes para realizar a divisão dos valores.');
         return;
       }
 
@@ -141,6 +144,17 @@ export default {
 
       const res = await req.json();
       console.log(res);
+    },
+    validateValue(participantIndex, itemIndex) {
+      // Converte o valor para número e verifica se é positivo
+      let value = parseFloat(this.participants[participantIndex].items[itemIndex].value);
+      if (isNaN(value) || value < 0) {
+        // Se o valor não for um número positivo, define como vazio
+        this.participants[participantIndex].items[itemIndex].value = '';
+      } else {
+        // Se for um número positivo, atualiza o valor
+        this.participants[participantIndex].items[itemIndex].value = value.toString();
+      }
     }
   }
 };
@@ -148,30 +162,109 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.participant-section {
+.title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.section-box {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
   margin-bottom: 20px;
-  border: 1px solid #ccc;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza verticalmente */
 }
 
-.participant-info {
-  margin-bottom: 10px;
-}
-
-.form-group {
-  margin-bottom: 10px;
-}
-
+.participant-section,
 .additional-section {
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.btn {
-  margin-right: 10px;
+.participant-title,
+.additional-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.label {
+  font-weight: bold;
+}
+
+.input {
+  width: calc(100% - 40px);
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.item-group {
+  margin-bottom: 8px;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.btn-add,
+.btn-remove {
+  background-color:#2ecc71; 
+  color: #fff;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  width: calc(50% - 6px);
+  font-size: 14px;
+  text-align: center;
+}
+
+.btn-add:hover,
+.btn-remove:hover {
+  background-color: #27ae60; 
+}
+
+.btn-primary {
+  background-color: #0073b1; 
+  color: #fff;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 3px;
+  display: block;
+  margin-top: 20px;
+  width: 100%;
+  font-size: 16px;
+  text-align: center;
+}
+
+.btn-primary:hover {
+  background-color: #005684; 
+}
+
+.btn-remove-red {
+  background-color: #e74c3c; 
+  border-radius: 3px;
+}
+
+.btn-remove-red:hover {
+  background-color: #c0392b; 
+}
+
+.btn-divide-blue {
+  background-color: #0073b1; 
+}
+
+.btn-divide-blue:hover {
+  background-color: #005684; 
 }
 </style>
