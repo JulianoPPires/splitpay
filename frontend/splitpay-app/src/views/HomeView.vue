@@ -21,7 +21,7 @@
               <div class="item-group" v-for="(item, itemIndex) in participant.items" :key="itemIndex">
                 <input type="text" v-model="item.name" :placeholder="'Nome do item '" class="input input-small" />
                 <input type="number" v-model="item.value" :placeholder="'Valor do item'" class="input input-small" @input="validateValue(participantIndex, itemIndex)" />
-                <div class="btn-group">
+                <div class="btn-item">
                   <button @click="addParticipantItem(participantIndex)" v-if="itemIndex === participant.items.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Item</button>
                   <button @click="removeParticipantItem(participantIndex, itemIndex)" :disabled="itemIndex === 0 && participant.items.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Item</button>
                 </div>
@@ -44,7 +44,7 @@
                   <option value="true">Porcentagem</option>
                   <option value="false">Valor Fixo</option>
                 </select>
-                <div class="btn-group">
+                <div class="btn-group-gasto">
                   <button @click="addExpense" v-if="index === increases.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Gasto</button>
                   <button @click="removeAdditionalExpense(index)" :disabled="index === 0 && increases.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Gasto</button>
                 </div>
@@ -64,7 +64,7 @@
                   <option value="true">Porcentagem</option>
                   <option value="false">Valor Fixo</option>
                 </select>
-                <div class="btn-group">
+                <div class="btn-group-desconto">
                   <button @click="addDiscount" v-if="index === discounts.length - 1" class="btn-add btn-add-green"><i class="fas fa-plus"></i> Desconto</button>
                   <button @click="removeAdditionalDiscount(index)" :disabled="index === 0 && discounts.length === 1" class="btn-remove btn-remove-red"><i class="fas fa-minus"></i> Desconto</button>
                 </div>
@@ -244,6 +244,21 @@ export default {
   padding: 15px;
 }
 
+.btn-group-item{
+  display: flex;
+  padding: 10px;
+}
+
+.btn-group-gasto{
+  display: flex;
+  padding: 10px;
+}
+
+.btn-group-desconto{
+  display: flex;
+  padding: 10px;
+}
+
 .btn-add,
 .btn-remove {
   background-color:#2ecc71; 
@@ -254,6 +269,7 @@ export default {
   width: calc(30% - 4px);
   font-size: 12px;
   text-align: center;
+  margin-right: 5px;
 }
 
 .btn-add:hover,
