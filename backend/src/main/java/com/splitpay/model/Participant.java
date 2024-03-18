@@ -1,6 +1,5 @@
 package com.splitpay.model;
 
-import com.splitpay.dto.ItemDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -3,6 +3,10 @@ package com.splitpay.handler;
 import com.splitpay.handler.exception.RequisicaoInvalidaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,17 +14,24 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class OrderExceptionHandler {
-  @ExceptionHandler(RequisicaoInvalidaException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ResponseBody
-  public ResponseEntity<String> handleRequisicaoInvalidaException(RequisicaoInvalidaException ex) {
-    return ResponseEntity.badRequest().body("Requisição inválida: " + ex.getMessage());
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    BindingResult bindingResult = ex.getBindingResult();
+    if (bindingResult.hasErrors()) {
+      FieldError fieldError = bindingResult.getFieldErrors().get(0);
+      return ResponseEntity.badRequest().body("Requisição inválida: " + fieldError.getDefaultMessage());
+    }
+    return ResponseEntity.badRequest().body("Requisição inválida, verifique os dados");
   }
 
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
-  public ResponseEntity<String> handleException(Exception ex) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro interno no servidor");
+  public ResponseEntity<String> handleJsonMalFormatadoException(HttpMessageNotReadableException ex) {
+
+    return ResponseEntity.badRequest().body("Requisição inválida: Verifique a formatação do Json");
   }
+
+
 }

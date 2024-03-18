@@ -1,14 +1,14 @@
 package com.splitpay.controller;
 
-import com.splitpay.dto.OrderDto;
+import com.splitpay.dto.OrderRequestDto;
 import com.splitpay.model.Order;
 import com.splitpay.service.SplitOrderService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -25,9 +25,9 @@ public class OrderController {
 
   @CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
   @PostMapping(value ="/splitorder", produces = "application/json")
-  public ResponseEntity<Object> splitOrder(@RequestBody @Valid OrderDto orderDto) {
+  public ResponseEntity<String> splitOrder(@Valid @RequestBody OrderRequestDto orderRequestDto) {
 
-    Order order = modelMapper.map(orderDto, Order.class);
+    Order order = modelMapper.map(orderRequestDto, Order.class);
 
     splitOrderService.calculateTotalPaidByEachParticipant(order);
 

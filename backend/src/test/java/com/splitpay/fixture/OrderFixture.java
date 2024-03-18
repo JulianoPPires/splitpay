@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrderFixture {
 
-  public static Order createOrder() {
+  public static Order createOrderEqualsExampleProblem() {
 
     Order order = new Order();
 
@@ -23,13 +23,56 @@ public class OrderFixture {
 
     order.setParticipants(participants);
 
-    List increases = createItemsIncreasesOrder1();
-    List discounts = createDiscountsOrder1();
-    order.setIncreases(increases);
-    order.setDiscounts(discounts);
+    order.setIncreases(createItemsIncreasesOrder1());
+    order.setDiscounts(createDiscountsOrder1());
 
     return order;
   }
+
+  public static Order createOrderWithDiscountsEqualsZero() {
+
+    Order order = new Order();
+
+    List<Participant> participants = createParticipants();
+
+
+    List<Item> items = createItemsParticipant1();
+    List<Item> items2 = createItemsParticipant2();
+
+    participants.get(0).setItems(items);
+    participants.get(1).setItems(items2);
+
+
+    order.setParticipants(participants);
+
+    order.setIncreases(createItemsIncreasesOrder1());
+    order.setDiscounts( createDiscountsEqualsZero());
+
+    return order;
+  }
+
+  public static Order createOrderWithIncreasesEqualsZero() {
+
+    Order order = new Order();
+
+    List<Participant> participants = createParticipants();
+
+
+    List<Item> items = createItemsParticipant1();
+    List<Item> items2 = createItemsParticipant2();
+
+    participants.get(0).setItems(items);
+    participants.get(1).setItems(items2);
+
+
+    order.setParticipants(participants);
+
+    order.setIncreases(createIncreasesEqualsZero());
+    order.setDiscounts(createDiscountsOrder1());
+
+    return order;
+  }
+
   public static List<Participant> createParticipants() {
     Participant participant1 = new Participant();
     Participant participant2 = new Participant();
@@ -66,6 +109,26 @@ public class OrderFixture {
   public static List<Increase> createItemsIncreasesOrder1() {
 
     Increase increase = new Increase("Entrega", 8.00, false);
+
+    List<Increase> increases = new ArrayList<>();
+    increases.add(increase);
+
+    return increases;
+  }
+
+  public static List<Discount> createDiscountsEqualsZero() {
+
+    Discount discount = new Discount("Desconto", 0.0, false);
+
+    List<Discount> discounts = new ArrayList<>();
+    discounts.add(discount);
+
+    return discounts;
+  }
+
+  public static List<Increase> createIncreasesEqualsZero() {
+
+    Increase increase = new Increase("Frete", 0.0, false);
 
     List<Increase> increases = new ArrayList<>();
     increases.add(increase);

@@ -1,8 +1,9 @@
 package com.splitpay.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 public class ItemDto {
@@ -10,6 +11,7 @@ public class ItemDto {
   @NotBlank(message = "O nome do item nao pode estar branco")
   private String name;
 
-  @NotBlank(message = "O valor do item não pode estar em branco")
-  private double value;
+  @NotNull
+  @Min(value = 0, message = "O valor do disconto deve ser maior ou igual a 0")
+  private Double value;
 }

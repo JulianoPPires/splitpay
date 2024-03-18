@@ -2,8 +2,6 @@ package com.splitpay.service;
 
 import com.splitpay.fixture.OrderFixture;
 import com.splitpay.model.Order;
-import com.splitpay.model.Participant;
-import com.splitpay.model.ParticipantFinancials;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +22,7 @@ class SplitOrderServiceTest {
   @Test
   void testCalculateSumTotalItemsOfOrder() {
 
-    Order order = OrderFixture.createOrder();
+    Order order = OrderFixture.createOrderEqualsExampleProblem();
 
     double result = producerService.calculateSumTotalItemsOfOrder(order);
 
@@ -50,7 +48,7 @@ class SplitOrderServiceTest {
   @Test
   void testCalculateSumTotalIncreasesOfOrder() {
 
-    double result = producerService.calculateTotalIncreasesOfOrder(OrderFixture.createOrder());
+    double result = producerService.calculateTotalIncreasesOfOrder(OrderFixture.createOrderEqualsExampleProblem());
 
     Assertions.assertEquals(8.0, result);
   }
@@ -58,40 +56,73 @@ class SplitOrderServiceTest {
   @Test
   void testCalculateTotalDiscountsOfOrder() {
 
-    double result = producerService.calculateTotalDiscountsOfOrder(OrderFixture.createOrder());
+    double result = producerService.calculateTotalDiscountsOfOrder(OrderFixture.createOrderEqualsExampleProblem());
 
     Assertions.assertEquals(20.0, result);
   }
 
-/*  @Test
-  void testCalculateSumTotalValueItemsAndIndividualPercentageOfTotalOrder() {
-    Order order = OrderFixture.createOrder();
-    Participant participant = order.getParticipants().get(0);
-    ParticipantFinancials financials = participant.getFinancials();
-    financials.setSumValueTotalOfItems(producerService.calculateSumTotalValueItems(participant.getItems()));
+  @Test
+  void testCalculateSumTotalValueItemsAndIndividualPercentageOfTotalOrder1() {
+    Order order = OrderFixture.createOrderEqualsExampleProblem();
 
-    producerService.calculateIndividualPercentageOfTotal(financials, producerService.calculateSumTotalItemsOfOrder(order));
+    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
 
-
-    Assertions.assertEquals(42.0, participant.getFinancials().getSumValueTotalOfItems());
+    Assertions.assertEquals(42.0, order.getParticipants().get(0).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 84%
-    Assertions.assertEquals(0.84, participant.getFinancials().getIndividualPercentage());
+    Assertions.assertEquals(0.84, order.getParticipants().get(0).getFinancials().getIndividualPercentage());
+    Assertions.assertEquals(6.72, order.getParticipants().get(0).getFinancials().getTotalIndividualIncrease());
+    Assertions.assertEquals(16.8, order.getParticipants().get(0).getFinancials().getTotalIndividualDiscount());
+    Assertions.assertEquals(10.08, order.getParticipants().get(0).getFinancials().getDifferenceIncreaseAndDiscountIndividual());
+    Assertions.assertEquals(31.92, order.getParticipants().get(0).getFinancials().getTotalIndividualExpense());
   }
 
   @Test
   void testCalculateSumTotalValueItemsAndIndividualPercentageOfTotalOrder2() {
-    Order order = OrderFixture.createOrder();
-    Participant participant = order.getParticipants().get(1);
-    ParticipantFinancials financials = participant.getFinancials();
-    financials.setSumValueTotalOfItems(producerService.calculateSumTotalValueItems(participant.getItems()));
+    Order order = OrderFixture.createOrderEqualsExampleProblem();
 
-    producerService.calculateIndividualPercentageOfTotal(financials, producerService.calculateSumTotalItemsOfOrder(order));
+    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
 
-    Assertions.assertEquals(8, participant.getFinancials().getSumValueTotalOfItems());
+    Assertions.assertEquals(8.0, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 16%
-    Assertions.assertEquals(0.16, participant.getFinancials().getIndividualPercentage());
-  }*/
+    Assertions.assertEquals(0.16, order.getParticipants().get(1).getFinancials().getIndividualPercentage());
+    Assertions.assertEquals(1.28, order.getParticipants().get(1).getFinancials().getTotalIndividualIncrease());
+    Assertions.assertEquals(3.2, order.getParticipants().get(1).getFinancials().getTotalIndividualDiscount());
+    Assertions.assertEquals(1.92, order.getParticipants().get(1).getFinancials().getDifferenceIncreaseAndDiscountIndividual());
+    Assertions.assertEquals(6.08, order.getParticipants().get(1).getFinancials().getTotalIndividualExpense());
+  }
 
+  @Test
+  void testWithValueIncrementsEqualZero() {
+    Order order = OrderFixture.createOrderWithIncreasesEqualsZero();
 
+    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
 
+    Assertions.assertEquals(8.0, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
+    //porcentagem individual em relacao ao total 16%
+    Assertions.assertEquals(0.16, order.getParticipants().get(1).getFinancials().getIndividualPercentage());
+    Assertions.assertEquals(0, order.getParticipants().get(1).getFinancials().getTotalIndividualIncrease());
+    Assertions.assertEquals(3.2, order.getParticipants().get(1).getFinancials().getTotalIndividualDiscount());
+    Assertions.assertEquals(3.2, order.getParticipants().get(1).getFinancials().getDifferenceIncreaseAndDiscountIndividual());
+    Assertions.assertEquals(4.8, order.getParticipants().get(1).getFinancials().getTotalIndividualExpense());
+  }
+
+  @Test
+  void testWithValueDistountsEqualZero() {
+    Order order = OrderFixture.createOrderWithDiscountsEqualsZero();
+
+    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
+
+    Assertions.assertEquals(8.0, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
+    //porcentagem individual em relacao ao total 16%
+    Assertions.assertEquals(0.16, order.getParticipants().get(1).getFinancials().getIndividualPercentage());
+    Assertions.assertEquals(1.28, order.getParticipants().get(1).getFinancials().getTotalIndividualIncrease());
+    Assertions.assertEquals(0, order.getParticipants().get(1).getFinancials().getTotalIndividualDiscount());
+    Assertions.assertEquals(1.28, order.getParticipants().get(1).getFinancials().getDifferenceIncreaseAndDiscountIndividual());
+    Assertions.assertEquals(6.72, order.getParticipants().get(1).getFinancials().getTotalIndividualExpense());
+  }
+
+//teste para aceitar sem discontos
+//teste para aceitar sem incrementos
+//teste para nao aceitar valores negativos
+//teste ao menos 2 participantes para a divisao
 }
