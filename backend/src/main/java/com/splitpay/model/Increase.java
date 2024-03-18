@@ -12,4 +12,12 @@ public class Increase {
   private String name;
   private Double value;
   private boolean isPercentage;
+
+  public Double getValue() {
+    if (isPercentage) {
+      return value / 100.0;
+    } else {
+      return value;
+    }
+  }
 }

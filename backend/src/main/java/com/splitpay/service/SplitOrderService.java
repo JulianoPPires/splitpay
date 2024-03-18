@@ -1,25 +1,31 @@
 package com.splitpay.service;
 
+import com.splitpay.dto.OrderResponseDto;
 import com.splitpay.model.*;
 import com.splitpay.payment.PaymentLinkContext;
-import com.splitpay.payment.PaymentLinkStrategy;
 import com.splitpay.payment.PicpayLinkStrategy;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SplitOrderService {
 
-  public void calculateTotalPaidByEachParticipant(Order order) {
+  public OrderResponseDto calculateTotalPaidByEachParticipantAndGenerateLinkToPaiment(Order order) {
 
     order = this.caculateTotalIndividualOfIncreasesAndDiscounts(order);
+
+    Map<String, String> paymentLinksMap = new HashMap<>();
+
     order.getParticipants().forEach(participant -> {
-      System.out.println(participant.getName() + ": R$" + participant.getFinancials().getTotalIndividualExpense());
       PaymentLinkContext context = new PaymentLinkContext(new PicpayLinkStrategy());
-      String payPalLink = context.generateLink(participant);
-      System.out.println("Link de pagameneto: " + payPalLink);
+      String paymentLink = context.generateLink(participant);
+      paymentLinksMap.put(participant.getName(), paymentLink);
     });
+
+    return new OrderResponseDto(paymentLinksMap);
 
   }
 
@@ -61,7 +67,7 @@ public class SplitOrderService {
 
   private void calculateTotalIndividualExpense(ParticipantFinancials financials) {
 
-    double totalPaidParticipant = financials.getSumValueTotalOfItems() - financials.getDifferenceIncreaseAndDiscountIndividual();
+    double totalPaidParticipant = (financials.getSumValueTotalOfItems() + financials.getTotalIndividualIncrease()) - financials.getTotalIndividualDiscount();
     double totalIndividualExpense = Math.round(totalPaidParticipant * 100.0) / 100.0;
 
     financials.setTotalIndividualExpense(totalIndividualExpense);
@@ -81,17 +87,39 @@ public class SplitOrderService {
   }
 
   protected double calculateTotalIncreasesOfOrder(Order order) {
+    double totalIncreases = 0.0;
 
     if (order.getIncreases() != null) {
-      return order.getIncreases().stream().mapToDouble(Increase::getValue).sum();
+      for (Increase increase : order.getIncreases()) {
+        if (increase.isPercentage()) {
+          // calcula o incremento proporcional ao valor total do pedido
+          totalIncreases += (increase.getValue()) * calculateSumTotalItemsOfOrder(order);
+        } else {
+          // Valor fixo adiciona diretamente
+          totalIncreases += increase.getValue();
+        }
+      }
     }
-    return 0;
+
+    return totalIncreases;
   }
 
   protected double calculateTotalDiscountsOfOrder(Order order) {
+    double totalDiscounts = 0.0;
+
     if (order.getDiscounts() != null) {
-      return order.getDiscounts().stream().mapToDouble(Discount::getValue).sum();
-    }else return 0;
+      for (Discount discount : order.getDiscounts()) {
+        if (discount.isPercentage()) {
+          // calcula o incremento proporcional ao valor total do pedido
+          totalDiscounts += (discount.getValue()) * calculateSumTotalItemsOfOrder(order);
+        } else {
+          // Valor fixo adiciona diretamente
+          totalDiscounts += discount.getValue();
+        }
+      }
+    }
+
+    return totalDiscounts;
   }
 
 

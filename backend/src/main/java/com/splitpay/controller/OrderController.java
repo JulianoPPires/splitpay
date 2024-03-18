@@ -1,6 +1,7 @@
 package com.splitpay.controller;
 
 import com.splitpay.dto.OrderRequestDto;
+import com.splitpay.dto.OrderResponseDto;
 import com.splitpay.model.Order;
 import com.splitpay.service.SplitOrderService;
 import jakarta.validation.Valid;
@@ -25,12 +26,10 @@ public class OrderController {
 
   @CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
   @PostMapping(value ="/split-order", produces = "application/json")
-  public ResponseEntity<String> splitOrder(@Valid @RequestBody OrderRequestDto orderRequestDto) {
+  public ResponseEntity<OrderResponseDto> splitOrder(@Valid @RequestBody OrderRequestDto orderRequestDto) {
 
     Order order = modelMapper.map(orderRequestDto, Order.class);
 
-    splitOrderService.calculateTotalPaidByEachParticipant(order);
-
-    return new ResponseEntity<>("{}", HttpStatus.OK);
+    return new ResponseEntity<>(splitOrderService.calculateTotalPaidByEachParticipantAndGenerateLinkToPaiment(order), HttpStatus.OK);
   }
 }
