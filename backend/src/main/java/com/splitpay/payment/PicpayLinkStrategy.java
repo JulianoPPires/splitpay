@@ -1,8 +1,10 @@
 package com.splitpay.payment;
 
+import com.splitpay.model.Participant;
+
 public class PicpayLinkStrategy implements PaymentLinkStrategy {
   @Override
-  public String generateLink(String name, double amount) {
-    return "https://picpay.me/"+name+"/" + amount;
+  public String generateLink(Participant participant) {
+    return "https://picpay.me/"+participant.getName()+"/" + participant.getFinancials().getTotalIndividualExpense();
   }
 }

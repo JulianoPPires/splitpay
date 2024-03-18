@@ -1,5 +1,7 @@
 package com.splitpay.payment;
 
+import com.splitpay.model.Participant;
+
 public class PaymentLinkContext {
   private PaymentLinkStrategy strategy;
 
@@ -7,7 +9,7 @@ public class PaymentLinkContext {
     this.strategy = strategy;
   }
 
-  public String generateLink(String name, double amount) {
-    return strategy.generateLink(name, amount);
+  public String generateLink(Participant participant) {
+    return strategy.generateLink(participant);
   }
 }

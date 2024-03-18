@@ -17,7 +17,7 @@ public class SplitOrderService {
     order.getParticipants().forEach(participant -> {
       System.out.println(participant.getName() + ": R$" + participant.getFinancials().getTotalIndividualExpense());
       PaymentLinkContext context = new PaymentLinkContext(new PicpayLinkStrategy());
-      String payPalLink = context.generateLink(participant.getName(), participant.getFinancials().getTotalIndividualExpense());
+      String payPalLink = context.generateLink(participant);
       System.out.println("Link de pagameneto: " + payPalLink);
     });
 
