@@ -12,6 +12,6 @@ public class ItemDto {
   private String name;
 
   @NotNull
-  @Min(value = 0, message = "O valor do disconto deve ser maior ou igual a 0")
+  @Min(value = 0, message = "O valor do item deve ser maior ou igual a 0")
   private Double value;
 }

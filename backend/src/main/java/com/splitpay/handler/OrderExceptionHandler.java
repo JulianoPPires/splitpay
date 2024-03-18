@@ -1,6 +1,5 @@
 package com.splitpay.handler;
 
-import com.splitpay.handler.exception.RequisicaoInvalidaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -17,12 +16,7 @@ public class OrderExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-    BindingResult bindingResult = ex.getBindingResult();
-    if (bindingResult.hasErrors()) {
-      FieldError fieldError = bindingResult.getFieldErrors().get(0);
-      return ResponseEntity.badRequest().body("Requisição inválida: " + fieldError.getDefaultMessage());
-    }
-    return ResponseEntity.badRequest().body("Requisição inválida, verifique os dados");
+    return ResponseEntity.badRequest().body("Requisição inválida - Verifique os dados enviados");
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -30,7 +24,7 @@ public class OrderExceptionHandler {
   @ResponseBody
   public ResponseEntity<String> handleJsonMalFormatadoException(HttpMessageNotReadableException ex) {
 
-    return ResponseEntity.badRequest().body("Requisição inválida: Verifique a formatação do Json");
+    return ResponseEntity.badRequest().body("Requisição inválida - Verifique a formatação do Json" + ex.getMessage());
   }
 
 
