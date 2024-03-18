@@ -24,7 +24,7 @@ public class OrderController {
   }
 
   @CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
-  @PostMapping(value ="/splitorder", produces = "application/json")
+  @PostMapping(value ="/split-order", produces = "application/json")
   public ResponseEntity<String> splitOrder(@Valid @RequestBody OrderRequestDto orderRequestDto) {
 
     Order order = modelMapper.map(orderRequestDto, Order.class);

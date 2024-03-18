@@ -1,6 +1,9 @@
 package com.splitpay.service;
 
 import com.splitpay.model.*;
+import com.splitpay.payment.PaymentLinkContext;
+import com.splitpay.payment.PaymentLinkStrategy;
+import com.splitpay.payment.PicpayLinkStrategy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,12 +11,14 @@ import java.util.List;
 @Service
 public class SplitOrderService {
 
-
   public void calculateTotalPaidByEachParticipant(Order order) {
 
     order = this.caculateTotalIndividualOfIncreasesAndDiscounts(order);
     order.getParticipants().forEach(participant -> {
       System.out.println(participant.getName() + ": R$" + participant.getFinancials().getTotalIndividualExpense());
+      PaymentLinkContext context = new PaymentLinkContext(new PicpayLinkStrategy());
+      String payPalLink = context.generateLink(participant.getName(), participant.getFinancials().getTotalIndividualExpense());
+      System.out.println("Link de pagameneto: " + payPalLink);
     });
 
   }

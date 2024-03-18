@@ -144,7 +144,7 @@ export default {
 
       console.log(dataJson);
 
-      const req = await fetch('http://localhost:8080/api/v1/order/splitorder', {
+      const req = await fetch('http://localhost:8080/api/v1/order/split-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
