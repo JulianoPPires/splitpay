@@ -10,6 +10,7 @@ public class SplitOrderService {
 
 
   public void calculateTotalPaidByEachParticipant(Order order) {
+
     this.caculateTotalIndividualOfIncreasesAndDiscounts(order);
     order.getParticipants().forEach(participant -> {
       System.out.println(participant.getName() + ": R$" + participant.getFinancials().getTotalIndividualExpense());
@@ -19,72 +20,66 @@ public class SplitOrderService {
 
   private void caculateTotalIndividualOfIncreasesAndDiscounts(Order order) {
 
-    double totalPriceItemsOfOrder = calculateSumTotalItemsOfOrder(order);
+    double totalValueItemsOfOrder = calculateSumTotalItemsOfOrder(order);
     double totalIncreases = calculateTotalIncreasesOfOrder(order);
     double totalDiscounts = calculateTotalDiscountsOfOrder(order);
 
     order.getParticipants()
         .forEach(participant -> {
-          calculateSumPriceTotalOfItems(participant, totalPriceItemsOfOrder);
-          calculateTotalIndividualIncrease(participant, totalIncreases);
-          calculateTotalIndividualDiscount(participant, totalDiscounts);
-          calculateDifferenceIncreaseAndDiscount(participant);
-          calculateTotalIndividualExpense(participant);
-
+          ParticipantFinancials financials = participant.getFinancials();
+          financials.setSumValueTotalOfItems(calculateSumTotalValueItems(participant.getItems()));
+          calculateIndividualPercentageOfTotal(financials, totalValueItemsOfOrder);
+          calculateTotalIndividualIncrease(financials, totalIncreases);
+          calculateTotalIndividualDiscount(financials, totalDiscounts);
+          calculateDifferenceIncreaseAndDiscount(financials);
+          calculateTotalIndividualExpense(financials);
         });
   }
 
-  private void calculateSumPriceTotalOfItems(Participant participant, double totalPriceItemsOfOrder) {
 
-    ParticipantFinancials financials = participant.getFinancials();
-    double sumPriceTotalOfItems = calculateSumPriceTotalOfItems(participant.getItems());
-    financials.setSumPriceTotalOfItems(sumPriceTotalOfItems);
-    double individualPercentage = sumPriceTotalOfItems / totalPriceItemsOfOrder;
-    financials.setIndividualPercentage(individualPercentage);
-  }
+  private void calculateTotalIndividualDiscount(ParticipantFinancials financials, double totalDiscounts) {
 
-  private void calculateTotalIndividualIncrease(Participant participant, double totalIncreases) {
-
-    ParticipantFinancials financials = participant.getFinancials();
-    double totalIndividualIncrease = financials.getIndividualPercentage() * totalIncreases;
-    financials.setTotalIndividualIncrease(totalIndividualIncrease);
-  }
-
-  private void calculateTotalIndividualDiscount(Participant participant, double totalDiscounts) {
-
-    ParticipantFinancials financials = participant.getFinancials();
     double totalIndividualDiscount = financials.getIndividualPercentage() * totalDiscounts;
     financials.setTotalIndividualDiscount(totalIndividualDiscount);
   }
 
-  private void calculateDifferenceIncreaseAndDiscount(Participant participant) {
-
-    ParticipantFinancials financials = participant.getFinancials();
+  private void calculateDifferenceIncreaseAndDiscount(ParticipantFinancials financials) {
     double differenceIncreaseAndDiscount = financials.getTotalIndividualIncrease() - financials.getTotalIndividualDiscount();
     financials.setDifferenceIncreaseAndDiscountIndividual(Math.abs(differenceIncreaseAndDiscount));
   }
 
-  private void calculateTotalIndividualExpense(Participant participant) {
+  private void calculateTotalIndividualExpense(ParticipantFinancials financials) {
 
-    ParticipantFinancials financials = participant.getFinancials();
-    double totalPaidParticipant = financials.getSumPriceTotalOfItems() - financials.getDifferenceIncreaseAndDiscountIndividual();
+    double totalPaidParticipant = financials.getSumValueTotalOfItems() - financials.getDifferenceIncreaseAndDiscountIndividual();
     double totalIndividualExpense = Math.round(totalPaidParticipant * 100.0) / 100.0;
     financials.setTotalIndividualExpense(totalIndividualExpense);
   }
 
-  private double calculateTotalIncreasesOfOrder(Order order) {
+  private void calculateTotalIndividualIncrease(ParticipantFinancials financials, double totalIncreases) {
+    double totalIndividualIncrease = financials.getIndividualPercentage() * totalIncreases;
+    financials.setTotalIndividualIncrease(totalIndividualIncrease);
+  }
+
+  private void calculateIndividualPercentageOfTotal(ParticipantFinancials financials,
+                                                      double totalValueItemsOfOrder) {
+
+    double individualPercentage = financials.getSumValueTotalOfItems() / totalValueItemsOfOrder;
+    financials.setIndividualPercentage(individualPercentage);
+  }
+
+  protected double calculateTotalIncreasesOfOrder(Order order) {
 
     return order.getIncreases().stream().mapToDouble(Increase::getValue).sum();
   }
 
-  private double calculateTotalDiscountsOfOrder(Order order) {
+  protected double calculateTotalDiscountsOfOrder(Order order) {
 
     return order.getDiscounts().stream().mapToDouble(Discount::getValue).sum();
 
   }
 
 
-  private double calculateSumPriceTotalOfItems(List<Item> items) {
+  protected double calculateSumTotalValueItems(List<Item> items) {
 
     return items.stream()
         .mapToDouble(Item::getValue)
@@ -92,7 +87,7 @@ public class SplitOrderService {
   }
 
 
-  private double calculateSumTotalItemsOfOrder(Order order) {
+  protected double calculateSumTotalItemsOfOrder(Order order) {
 
     return order.getParticipants().stream()
         .flatMap(participant -> participant.getItems().stream())
