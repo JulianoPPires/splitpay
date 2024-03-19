@@ -1,5 +1,6 @@
 package com.splitpay.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ public class IncreaseDto {
   private Double value;
 
   @NotNull
+  @Schema(example = "false")
   private Boolean isPercentage;
 
 }
