@@ -43,6 +43,6 @@ public class OrderController {
 
     Order order = modelMapper.map(orderRequestDto, Order.class);
 
-    return new ResponseEntity<>(splitOrderService.calculateTotalPaidByEachParticipantAndGenerateLinkToPaiment(order), HttpStatus.OK);
+    return new ResponseEntity<>(splitOrderService.calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(order), HttpStatus.OK);
   }
 }

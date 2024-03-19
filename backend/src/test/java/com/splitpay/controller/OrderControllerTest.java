@@ -41,12 +41,12 @@ public class OrderControllerTest {
     Order order = OrderFixture.createOrderEqualsExampleProblem();
     OrderResponseDto responseDto = OrderResponseDtoFixture.createOrderResponse();
     when(modelMapper.map(requestDto, Order.class)).thenReturn(order);
-    when(splitOrderService.calculateTotalPaidByEachParticipantAndGenerateLinkToPaiment(order)).thenReturn(responseDto);
+    when(splitOrderService.calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(order)).thenReturn(responseDto);
 
     ResponseEntity<OrderResponseDto> responseEntity = orderController.splitOrder(requestDto);
 
     verify(modelMapper, times(1)).map(requestDto, Order.class);
-    verify(splitOrderService, times(1)).calculateTotalPaidByEachParticipantAndGenerateLinkToPaiment(order);
+    verify(splitOrderService, times(1)).calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(order);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     assertEquals(responseDto, responseEntity.getBody());
   }
