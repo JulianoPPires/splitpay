@@ -11,15 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class SplitOrderService {
-
-  public OrderResponseDto calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(Order order) {
-    order = calculateTotalIndividualOfIncreasesAndDiscounts(order);
-
-    Map<String, String> paymentLinksMap = generatePaymentLinks(order);
-
-    return new OrderResponseDto(paymentLinksMap);
-  }
+public class CalculatorSplitService {
 
   protected Order calculateTotalIndividualOfIncreasesAndDiscounts(Order order) {
     double totalValueItemsOfOrder = calculateSumTotalItemsOfOrder(order);
@@ -37,18 +29,6 @@ public class SplitOrderService {
     });
 
     return order;
-  }
-
-  private Map<String, String> generatePaymentLinks(Order order) {
-    Map<String, String> paymentLinksMap = new HashMap<>();
-
-    order.getParticipants().forEach(participant -> {
-      PaymentLinkContext context = new PaymentLinkContext(new PicpayLinkStrategy());
-      String paymentLink = context.generateLink(participant);
-      paymentLinksMap.put(participant.getName(), paymentLink);
-    });
-
-    return paymentLinksMap;
   }
 
   private void calculateTotalIndividualDiscount(ParticipantFinancials financials, double totalDiscounts) {

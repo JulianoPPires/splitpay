@@ -3,7 +3,8 @@ package com.splitpay.controller;
 import com.splitpay.dto.OrderRequestDto;
 import com.splitpay.dto.OrderResponseDto;
 import com.splitpay.model.Order;
-import com.splitpay.service.SplitOrderService;
+import com.splitpay.service.CalculatorSplitService;
+import com.splitpay.service.SplitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,12 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/order")
 public class OrderController {
 
-  private final SplitOrderService splitOrderService;
+  private final SplitService splitService;
   private final ModelMapper modelMapper;
 
-  public OrderController(SplitOrderService splitOrderService, ModelMapper modelMapper) {
+  public OrderController(SplitService splitService, ModelMapper modelMapper) {
 
-    this.splitOrderService = splitOrderService;
+    this.splitService = splitService;
     this.modelMapper = modelMapper;
   }
 
@@ -43,6 +44,6 @@ public class OrderController {
 
     Order order = modelMapper.map(orderRequestDto, Order.class);
 
-    return new ResponseEntity<>(splitOrderService.calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(order), HttpStatus.OK);
+    return new ResponseEntity<>(splitService.calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(order), HttpStatus.OK);
   }
 }

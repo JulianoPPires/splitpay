@@ -1,54 +1,62 @@
 package com.splitpay.controller;
 
-import com.splitpay.dto.OrderRequestDto;
-import com.splitpay.dto.OrderResponseDto;
-import com.splitpay.fixture.OrderFixture;
-import com.splitpay.fixture.OrderResponseDtoFixture;
-import com.splitpay.model.Order;
-import com.splitpay.service.SplitOrderService;
-import org.junit.jupiter.api.BeforeEach;
+import com.splitpay.fixture.OrderControllerFixture;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 public class OrderControllerTest {
 
-  @Mock
-  private SplitOrderService splitOrderService;
 
-  @Mock
-  private ModelMapper modelMapper;
+  @Autowired
+  MockMvc mockMvc;
 
-  @InjectMocks
-  private OrderController orderController;
-
-  @BeforeEach
-  public void setUp() {
-
-    MockitoAnnotations.initMocks(this);
+  @Test
+  public void testSplitOrder_Success_CompleteJson() throws Exception {
+    this.mockMvc.perform(post("/api/v1/order/split-order")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(OrderControllerFixture.jsonExampleComplete())
+        .accept(MediaType.APPLICATION_JSON)
+    )
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().json(OrderControllerFixture.jsonResponseExample1()));
   }
 
   @Test
-  public void testSplitOrder_Success() {
-    OrderRequestDto requestDto = new OrderRequestDto();
-    Order order = OrderFixture.createOrderEqualsExampleProblem();
-    OrderResponseDto responseDto = OrderResponseDtoFixture.createOrderResponse();
-    when(modelMapper.map(requestDto, Order.class)).thenReturn(order);
-    when(splitOrderService.calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(order)).thenReturn(responseDto);
-
-    ResponseEntity<OrderResponseDto> responseEntity = orderController.splitOrder(requestDto);
-
-    verify(modelMapper, times(1)).map(requestDto, Order.class);
-    verify(splitOrderService, times(1)).calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(order);
-    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    assertEquals(responseDto, responseEntity.getBody());
+  public void testSplitOrder_Success_Without_Increases() throws Exception {
+    this.mockMvc.perform(post("/api/v1/order/split-order")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OrderControllerFixture.jsonExampleWithoutIncreses())
+            .accept(MediaType.APPLICATION_JSON)
+        )
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().json(OrderControllerFixture.jsonResponseWithoutIncreases()));
   }
 
+  @Test
+  public void testSplitOrder_Success_Without_Discounts() throws Exception {
+    this.mockMvc.perform(post("/api/v1/order/split-order")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OrderControllerFixture.jsonExampleWithoutDiscounts())
+            .accept(MediaType.APPLICATION_JSON)
+        )
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().json(OrderControllerFixture.jsonResponseWithoutDiscounts()));
+  }
+
+  //teste para nao aceitar valores negativos
+  //teste ao menos 2 participantes para a divisao
 }

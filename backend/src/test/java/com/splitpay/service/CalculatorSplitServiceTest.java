@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SplitOrderServiceTest {
+class CalculatorSplitServiceTest {
 
   @Autowired
-  SplitOrderService producerService;
+  CalculatorSplitService calculatorSplitService;
 
   @BeforeEach
   void setUp() {
@@ -24,7 +24,7 @@ class SplitOrderServiceTest {
 
     Order order = OrderFixture.createOrderEqualsExampleProblem();
 
-    double result = producerService.calculateSumTotalItemsOfOrder(order);
+    double result = calculatorSplitService.calculateSumTotalItemsOfOrder(order);
 
     Assertions.assertEquals(50.0, result);
   }
@@ -32,7 +32,7 @@ class SplitOrderServiceTest {
   @Test
   void testCalculateSumPriceTotalOfItemsArray1() {
 
-    double result = producerService.calculateSumTotalValueItems( OrderFixture.createItemsParticipant1());
+    double result = calculatorSplitService.calculateSumTotalValueItems( OrderFixture.createItemsParticipant1());
 
     Assertions.assertEquals(42.0, result);
   }
@@ -40,7 +40,7 @@ class SplitOrderServiceTest {
   @Test
   void testCalculateSumPriceTotalOfItemsArray2() {
 
-    double result = producerService.calculateSumTotalValueItems(OrderFixture.createItemsParticipant2());
+    double result = calculatorSplitService.calculateSumTotalValueItems(OrderFixture.createItemsParticipant2());
 
     Assertions.assertEquals(8, result);
   }
@@ -48,7 +48,7 @@ class SplitOrderServiceTest {
   @Test
   void testCalculateSumTotalIncreasesOfOrder() {
 
-    double result = producerService.calculateTotalIncreasesOfOrder(OrderFixture.createOrderEqualsExampleProblem());
+    double result = calculatorSplitService.calculateTotalIncreasesOfOrder(OrderFixture.createOrderEqualsExampleProblem());
 
     Assertions.assertEquals(8.0, result);
   }
@@ -56,7 +56,7 @@ class SplitOrderServiceTest {
   @Test
   void testCalculateTotalDiscountsOfOrder() {
 
-    double result = producerService.calculateTotalDiscountsOfOrder(OrderFixture.createOrderEqualsExampleProblem());
+    double result = calculatorSplitService.calculateTotalDiscountsOfOrder(OrderFixture.createOrderEqualsExampleProblem());
 
     Assertions.assertEquals(20.0, result);
   }
@@ -65,7 +65,7 @@ class SplitOrderServiceTest {
   void testCalculateSumTotalValueItemsAndIndividualPercentageOfTotalOrder1() {
     Order order = OrderFixture.createOrderEqualsExampleProblem();
 
-    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
 
     Assertions.assertEquals(42.0, order.getParticipants().get(0).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 84%
@@ -80,7 +80,7 @@ class SplitOrderServiceTest {
   void testCalculateSumTotalValueItemsAndIndividualPercentageOfTotalOrder2() {
     Order order = OrderFixture.createOrderEqualsExampleProblem();
 
-    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
 
     Assertions.assertEquals(8.0, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 16%
@@ -95,7 +95,7 @@ class SplitOrderServiceTest {
   void testWithValueIncrementsEqualZero() {
     Order order = OrderFixture.createOrderWithIncreasesEqualsZero();
 
-    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
 
     Assertions.assertEquals(8.0, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 16%
@@ -110,7 +110,7 @@ class SplitOrderServiceTest {
   void testWithValueDistountsEqualZero() {
     Order order = OrderFixture.createOrderWithDiscountsEqualsZero();
 
-    order = producerService.caculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
 
     Assertions.assertEquals(8.0, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 16%
@@ -121,8 +121,4 @@ class SplitOrderServiceTest {
     Assertions.assertEquals(9.28, order.getParticipants().get(1).getFinancials().getTotalIndividualExpense());
   }
 
-//teste para aceitar sem discontos
-//teste para aceitar sem incrementos
-//teste para nao aceitar valores negativos
-//teste ao menos 2 participantes para a divisao
 }
