@@ -1,28 +1,30 @@
-# splitpay-app
+# README - Executando a Aplicação Frontend
 
-## README - Executando a Aplicação Frontend
-```
 Este README fornecerá instruções sobre como executar a aplicação frontend Vue.js e interagir com ela.
-```
+
 
 ### Pré-requisitos
-```
+
 Certifique-se de ter os seguintes requisitos instalados em sua máquina:
 
 Node.js e npm (geralmente instalados juntos)
-```
+
 
 ### Configuração do Ambiente
-```
+
 Instalação de Dependências:
 Abra um terminal na raiz do projeto e execute o seguinte comando para instalar as dependências do projeto:
+
+```
 npm install
 ```
 
 ### Executando a Aplicação
 Após concluir a configuração do ambiente, você pode executar a aplicação frontend com o seguinte comando: 
 
+```
 npm run serve
+```
 
 Isso iniciará um servidor de desenvolvimento e a aplicação estará disponível em http://localhost:3000 (ou outro URL, dependendo das configurações).
 
