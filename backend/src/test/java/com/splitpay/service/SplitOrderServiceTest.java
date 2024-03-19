@@ -118,7 +118,7 @@ class SplitOrderServiceTest {
     Assertions.assertEquals(1.28, order.getParticipants().get(1).getFinancials().getTotalIndividualIncrease());
     Assertions.assertEquals(0, order.getParticipants().get(1).getFinancials().getTotalIndividualDiscount());
     Assertions.assertEquals(1.28, order.getParticipants().get(1).getFinancials().getDifferenceIncreaseAndDiscountIndividual());
-    Assertions.assertEquals(6.72, order.getParticipants().get(1).getFinancials().getTotalIndividualExpense());
+    Assertions.assertEquals(9.28, order.getParticipants().get(1).getFinancials().getTotalIndividualExpense());
   }
 
 //teste para aceitar sem discontos
