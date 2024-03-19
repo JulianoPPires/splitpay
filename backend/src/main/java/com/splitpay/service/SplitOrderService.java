@@ -92,10 +92,8 @@ public class SplitOrderService {
     if (order.getIncreases() != null) {
       for (Increase increase : order.getIncreases()) {
         if (increase.isPercentage()) {
-          // calcula o incremento proporcional ao valor total do pedido
           totalIncreases += (increase.getValue()) * calculateSumTotalItemsOfOrder(order);
         } else {
-          // Valor fixo adiciona diretamente
           totalIncreases += increase.getValue();
         }
       }
@@ -110,10 +108,8 @@ public class SplitOrderService {
     if (order.getDiscounts() != null) {
       for (Discount discount : order.getDiscounts()) {
         if (discount.isPercentage()) {
-          // calcula o incremento proporcional ao valor total do pedido
           totalDiscounts += (discount.getValue()) * calculateSumTotalItemsOfOrder(order);
         } else {
-          // Valor fixo adiciona diretamente
           totalDiscounts += discount.getValue();
         }
       }
