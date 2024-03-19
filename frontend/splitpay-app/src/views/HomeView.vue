@@ -157,16 +157,15 @@ export default {
 
       // Verifica se há dados preenchidos nos gastos adicionais
       const hasIncreases = this.increases.some(increase => {
-        return increase.name.trim() !== '' || increase.value.trim() !== '';
+        return increase.name.trim() !== '' && increase.value.trim() !== '';
       });
 
       // Verifica se há dados preenchidos nos descontos adicionais
       const hasDiscounts = this.discounts.some(discount => {
-        return discount.name.trim() !== '' || discount.value.trim() !== '';
+        return discount.name.trim() !== '' && discount.value.trim() !== '';
       });
 
 
-      // Validar se todos os campos estão preenchidos
       if (!this.validateForm()) {
         alert('Por favor, preencha todos os campos corretamente.');
         return;
@@ -201,14 +200,20 @@ export default {
         body: dataJson
       })
 
-      const res = await req.json();
-      console.log(res);
+      if (req.ok) {
 
-      // Atualiza os links de pagamento
-      this.paymentLinks = res.paymentLinks;
+        const res = await req.json();
+        console.log(res);
 
-      // Exibe a modal
-      this.showModal = true;
+        if (res.paymentLinks) {
+          this.paymentLinks = res.paymentLink
+          this.showModal = true;
+        } else {
+          alert('Erro ao processar a resposta do servidor. Tente novamente mais tarde.');
+        }
+      } else {
+        alert('Erro ao enviar a solicitação. Por favor, Verifique os dados do formulario.');
+      }
 
     },
     validateValue(participantIndex, itemIndex) {
