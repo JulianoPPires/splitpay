@@ -76,6 +76,8 @@ public class OrderFixture {
   public static List<Participant> createParticipants() {
     Participant participant1 = new Participant();
     Participant participant2 = new Participant();
+    participant1.setName("Nome participante 1");
+    participant2.setName("Nome participante 2");
 
     List<Participant> participants = new ArrayList<>();
     participants.add(participant1);
