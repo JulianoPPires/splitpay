@@ -3,7 +3,6 @@ package com.splitpay.controller;
 import com.splitpay.dto.OrderRequestDto;
 import com.splitpay.dto.OrderResponseDto;
 import com.splitpay.model.Order;
-import com.splitpay.service.CalculatorSplitService;
 import com.splitpay.service.SplitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

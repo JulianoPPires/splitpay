@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -57,6 +56,26 @@ public class OrderControllerTest {
         .andExpect(content().json(OrderControllerFixture.jsonResponseWithoutDiscounts()));
   }
 
-  //teste para nao aceitar valores negativos
-  //teste ao menos 2 participantes para a divisao
+  @Test
+  public void testSplitOrder_Error_Negative_Value() throws Exception {
+    this.mockMvc.perform(post("/api/v1/order/split-order")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OrderControllerFixture.jsonExampleWithoutNeagtiveValue())
+            .accept(MediaType.APPLICATION_JSON)
+        )
+        .andDo(print())
+        .andExpect(status().is4xxClientError());
+  }
+
+  @Test
+  public void testSplitOrder_Have_1_Participant_To_divide() throws Exception {
+    this.mockMvc.perform(post("/api/v1/order/split-order")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(OrderControllerFixture.jsonExampleWith1Participant())
+            .accept(MediaType.APPLICATION_JSON)
+        )
+        .andDo(print())
+        .andExpect(status().is4xxClientError());
+  }
+
 }
