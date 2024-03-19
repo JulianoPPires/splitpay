@@ -201,17 +201,21 @@ export default {
       })
 
       if (req.ok) {
-
         const res = await req.json();
         console.log(res);
 
+        
         if (res.paymentLinks) {
-          this.paymentLinks = res.paymentLink
+          
+          this.paymentLinks = res.paymentLinks;
+         
           this.showModal = true;
         } else {
+          
           alert('Erro ao processar a resposta do servidor. Tente novamente mais tarde.');
         }
       } else {
+       
         alert('Erro ao enviar a solicitação. Por favor, Verifique os dados do formulario.');
       }
 
