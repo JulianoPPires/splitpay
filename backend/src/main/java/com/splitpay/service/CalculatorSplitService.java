@@ -6,31 +6,34 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CalculatorSplitService {
 
-    protected Order calculateTotalIndividualOfIncreasesAndDiscounts(Order order) {
+    protected Order calculateTotalIndividualOfOperation(Order order) {
         BigDecimal totalValueItemsOfOrder = calculateSumTotalItemsOfOrder(order);
         BigDecimal totalIncreases = calculateTotalIncreasesOfOrder(order);
         BigDecimal totalDiscounts = calculateTotalDiscountsOfOrder(order);
 
-        order.getParticipants().forEach(participant -> {
-            ParticipantFinancials financials = participant.getFinancials();
-            financials.setSumValueTotalOfItems(calculateSumTotalValueItems(participant.getItems()));
-            calculateIndividualPercentageOfTotal(financials, totalValueItemsOfOrder);
-            calculateTotalIndividualIncrease(financials, totalIncreases);
-            calculateTotalIndividualDiscount(financials, totalDiscounts);
-            calculateDifferenceBetweenOperations(financials);
-            calculateTotalIndividualExpense(financials);
-        });
+        order.setParticipants(order.getParticipants().stream()
+                .map(participant -> {
+                    ParticipantFinancials financials = participant.getFinancials();
+                    financials.setSumValueTotalOfItems(calculateSumTotalValueItems(participant.getItems()));
+                    calculateIndividualPercentageOfTotal(financials, totalValueItemsOfOrder);
+                    calculateTotalIndividualIncrease(financials, totalIncreases);
+                    calculateTotalIndividualDiscount(financials, totalDiscounts);
+                    calculateDifferenceBetweenOperations(financials);
+                    calculateTotalIndividualExpense(financials);
+                    return participant;
+                }).collect(Collectors.toList()));
 
         return order;
     }
 
 
     private void calculateDifferenceBetweenOperations(ParticipantFinancials financials) {
-        BigDecimal differenceIncreaseAndDiscount = financials.getTotalIndividualIncrease().subtract(financials.getTotalIndividualDiscount());
+        BigDecimal differenceIncreaseAndDiscount = financials.getTotalIndividualIncrease().subtract(financials.getTotalIndividualDiscount()).abs();
         financials.setDifferenceIncreaseAndDiscountIndividual(differenceIncreaseAndDiscount);
     }
 
@@ -49,7 +52,7 @@ public class CalculatorSplitService {
     }
 
     private BigDecimal calculateTotalIndividualOperations(ParticipantFinancials financials, BigDecimal totalOperations) {
-        BigDecimal totalIndividualOperation = financials.getIndividualPercentage().multiply(BigDecimal.ONE.add(totalOperations));
+        BigDecimal totalIndividualOperation = financials.getIndividualPercentage().multiply(totalOperations);
         totalIndividualOperation = totalIndividualOperation.setScale(2, RoundingMode.HALF_UP);
         return totalIndividualOperation;
 
@@ -70,12 +73,12 @@ public class CalculatorSplitService {
 
     protected BigDecimal calculateTotalOperationsOfOrder(Order order, List<Operation> operations) {
         BigDecimal totalOperations = BigDecimal.ZERO;
-
+        BigDecimal totalItems;
         if (operations != null) {
             for (Operation operation : operations) {
                 BigDecimal adjustmentValue = operation.getValue();
                 if (operation.isPercentage()) {
-                    BigDecimal totalItems = calculateSumTotalItemsOfOrder(order);
+                    totalItems = calculateSumTotalItemsOfOrder(order);
                     totalOperations = totalOperations.add(adjustmentValue.multiply(totalItems));
                 } else {
                     totalOperations = totalOperations.add(adjustmentValue);
@@ -88,16 +91,11 @@ public class CalculatorSplitService {
 
 
     protected BigDecimal calculateSumTotalValueItems(List<Item> items) {
-        return items.stream()
-                .map(Item::getValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return items.stream().map(Item::getValue).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     protected BigDecimal calculateSumTotalItemsOfOrder(Order order) {
-        return order.getParticipants().stream()
-                .flatMap(participant -> participant.getItems().stream())
-                .map(Item::getValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return order.getParticipants().stream().flatMap(participant -> participant.getItems().stream()).map(Item::getValue).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         /*
         for (Participant participant : order.getParticipants()) {

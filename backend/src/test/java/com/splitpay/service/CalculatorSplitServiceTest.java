@@ -73,13 +73,13 @@ class CalculatorSplitServiceTest {
     BigDecimal expectedTotalValue = new BigDecimal("42");
     BigDecimal expectedIndividualPercentage = new BigDecimal("0.84");
     BigDecimal expectedTotalIndividualIncrease = new BigDecimal("6.72");
-    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("16.8");
+    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("16.80");
     BigDecimal expectedDifferenceIncreaseAndDiscountIndividual = new BigDecimal("10.08");
     BigDecimal expectedTotalIndividualExpense = new BigDecimal("31.92");
 
     Order order = OrderFixture.createOrderEqualsExampleProblem();
 
-    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfOperation(order);
 
     Assertions.assertEquals(expectedTotalValue, order.getParticipants().get(0).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 84%
@@ -97,11 +97,11 @@ class CalculatorSplitServiceTest {
     BigDecimal expectedTotalValue = new BigDecimal("8");
     BigDecimal expectedIndividualPercentage = new BigDecimal("0.16");
     BigDecimal expectedTotalIndividualIncrease = new BigDecimal("1.28");
-    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("3.2");
+    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("3.20");
     BigDecimal expectedDifferenceIncreaseAndDiscountIndividual = new BigDecimal("1.92");
     BigDecimal expectedTotalIndividualExpense = new BigDecimal("6.08");
 
-    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfOperation(order);
 
     Assertions.assertEquals(expectedTotalValue, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 16%
@@ -118,12 +118,12 @@ class CalculatorSplitServiceTest {
 
     BigDecimal expectedTotalValue = new BigDecimal("8");
     BigDecimal expectedIndividualPercentage = new BigDecimal("0.16");
-    BigDecimal expectedTotalIndividualIncrease = new BigDecimal("0");
-    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("3.2");
-    BigDecimal expectedDifferenceIncreaseAndDiscountIndividual = new BigDecimal("3.2");
-    BigDecimal expectedTotalIndividualExpense = new BigDecimal("4.8");
+    BigDecimal expectedTotalIndividualIncrease = new BigDecimal("0.00");
+    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("3.20");
+    BigDecimal expectedDifferenceIncreaseAndDiscountIndividual = new BigDecimal("3.20");
+    BigDecimal expectedTotalIndividualExpense = new BigDecimal("4.80");
 
-    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfOperation(order);
 
     Assertions.assertEquals(expectedTotalValue, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 16%
@@ -141,11 +141,11 @@ class CalculatorSplitServiceTest {
     BigDecimal expectedTotalValue = new BigDecimal("8");
     BigDecimal expectedIndividualPercentage = new BigDecimal("0.16");
     BigDecimal expectedTotalIndividualIncrease = new BigDecimal("1.28");
-    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("0");
+    BigDecimal expectedTotalIndividualDiscount = new BigDecimal("0.00");
     BigDecimal expectedDifferenceIncreaseAndDiscountIndividual = new BigDecimal("1.28");
     BigDecimal expectedTotalIndividualExpense = new BigDecimal("9.28");
 
-    order = calculatorSplitService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
+    order = calculatorSplitService.calculateTotalIndividualOfOperation(order);
 
     Assertions.assertEquals(expectedTotalValue, order.getParticipants().get(1).getFinancials().getSumValueTotalOfItems());
     //porcentagem individual em relacao ao total 16%

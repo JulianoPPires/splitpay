@@ -19,7 +19,7 @@ public class SplitService {
 
   public OrderResponseDto calculateTotalPaidByEachParticipantAndGenerateLinkToPayment(Order order) {
 
-    order = calculatorService.calculateTotalIndividualOfIncreasesAndDiscounts(order);
-    return new OrderResponseDto(linkGenerationService.generatePaymentLinks(calculatorService.calculateTotalIndividualOfIncreasesAndDiscounts(order)));
+    order = calculatorService.calculateTotalIndividualOfOperation(order);
+    return new OrderResponseDto(linkGenerationService.generatePaymentLinks(calculatorService.calculateTotalIndividualOfOperation(order)));
   }
 }
