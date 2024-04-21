@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -11,14 +12,14 @@ import java.util.List;
 @NoArgsConstructor
 public class Order {
 
-  private List<Participant> participants;
+    private List<Participant> participants;
 
-  private List<Operation> increases;
-  private List<Operation> discounts;
+    private List<Operation> increases;
+    private List<Operation> discounts;
 
-  private double totalPriceOrder;
+    private BigDecimal totalPriceOrder;
 
-  private double totalPriceIncreases;
+    private BigDecimal totalPriceIncreases;
 
-  private double totalPriceDiscounts;
+    private BigDecimal totalPriceDiscounts;
 }

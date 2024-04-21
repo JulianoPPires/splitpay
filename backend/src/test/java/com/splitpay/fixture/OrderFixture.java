@@ -2,6 +2,7 @@ package com.splitpay.fixture;
 
 import com.splitpay.model.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,9 +88,10 @@ public class OrderFixture {
   }
 
   public static List<Item> createItemsParticipant1() {
-
-    Item item1 = new Item("Hamburguer", 40.00);
-    Item item2 = new Item("Sobremesa", 2.00);
+    BigDecimal valor = new BigDecimal(40);
+    BigDecimal valor2 = new BigDecimal(2);
+    Item item1 = new Item("Hamburguer", valor);
+    Item item2 = new Item("Sobremesa", valor2);
 
     List<Item> items = new ArrayList<>();
     items.add(item1);
@@ -99,8 +101,8 @@ public class OrderFixture {
   }
 
   public static List<Item> createItemsParticipant2() {
-
-    Item item1 = new Item("Sanduíche", 8.00);
+    BigDecimal valor = new BigDecimal(8);
+    Item item1 = new Item("Sanduíche", valor);
 
     List<Item> items = new ArrayList<>();
     items.add(item1);
@@ -108,41 +110,41 @@ public class OrderFixture {
     return items;
   }
 
-  public static List<Increase> createItemsIncreasesOrder1() {
+  public static List<Operation> createItemsIncreasesOrder1() {
+    BigDecimal valor = new BigDecimal(8);
+    Operation increase = new Increase("Entrega", valor, false);
 
-    Increase increase = new Increase("Entrega", 8.00, false);
-
-    List<Increase> increases = new ArrayList<>();
+    List<Operation> increases = new ArrayList<>();
     increases.add(increase);
 
     return increases;
   }
 
-  public static List<Discount> createDiscountsEqualsZero() {
+  public static List<Operation> createDiscountsEqualsZero() {
 
-    Discount discount = new Discount("Desconto", 0.0, false);
+    Operation discount = new Discount("Desconto", BigDecimal.ZERO, false);
 
-    List<Discount> discounts = new ArrayList<>();
+    List<Operation> discounts = new ArrayList<>();
     discounts.add(discount);
 
     return discounts;
   }
 
-  public static List<Increase> createIncreasesEqualsZero() {
+  public static List<Operation> createIncreasesEqualsZero() {
 
-    Increase increase = new Increase("Frete", 0.0, false);
+    Operation increase = new Increase("Frete", BigDecimal.ZERO, false);
 
-    List<Increase> increases = new ArrayList<>();
+    List<Operation> increases = new ArrayList<>();
     increases.add(increase);
 
     return increases;
   }
 
-  public static List<Discount> createDiscountsOrder1() {
+  public static List<Operation> createDiscountsOrder1() {
+    BigDecimal valor = new BigDecimal(20);
+    Operation discount = new Discount("Desconto", valor, false);
 
-    Discount discount = new Discount("Desconto", 20.00, false);
-
-    List<Discount> discounts = new ArrayList<>();
+    List<Operation> discounts = new ArrayList<>();
     discounts.add(discount);
 
     return discounts;

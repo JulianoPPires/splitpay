@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Operation {
+public class Operation {
     private String name;
     private BigDecimal value;
     private boolean isPercentage;

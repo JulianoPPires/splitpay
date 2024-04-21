@@ -10,11 +10,11 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Hamburguer\",\n" +
-        "            \"value\": 40.0\n" +
+        "            \"value\": 40\n" +
         "          },\n" +
         "          {\n" +
         "            \"name\": \"Sobremesa\",\n" +
-        "            \"value\": 2.0\n" +
+        "            \"value\": 2\n" +
         "          }\n" +
         "        ]\n" +
         "      },\n" +
@@ -23,7 +23,7 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Sanduíche\",\n" +
-        "            \"value\": 8.0\n" +
+        "            \"value\": 8\n" +
         "          }\n" +
         "        ]\n" +
         "      }\n" +
@@ -31,7 +31,7 @@ public class OrderControllerFixture {
         "     \"increases\":[\n" +
         "        {\n" +
         "            \"name\": \"frete\",\n" +
-        "            \"value\": 8.0,\n" +
+        "            \"value\": 8,\n" +
         "            \"isPercentage\": false\n" +
         "          }\n" +
         "    ],\n" +
@@ -53,11 +53,11 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Hamburguer\",\n" +
-        "            \"value\": 40.0\n" +
+        "            \"value\": 40\n" +
         "          },\n" +
         "          {\n" +
         "            \"name\": \"Sobremesa\",\n" +
-        "            \"value\": 2.0\n" +
+        "            \"value\": 2\n" +
         "          }\n" +
         "        ]\n" +
         "      },\n" +
@@ -66,7 +66,7 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Sanduíche\",\n" +
-        "            \"value\": 8.0\n" +
+        "            \"value\": 8\n" +
         "          }\n" +
         "        ]\n" +
         "      }\n" +
@@ -89,11 +89,11 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Hamburguer\",\n" +
-        "            \"value\": 40.0\n" +
+        "            \"value\": 40\n" +
         "          },\n" +
         "          {\n" +
         "            \"name\": \"Sobremesa\",\n" +
-        "            \"value\": 2.0\n" +
+        "            \"value\": 2\n" +
         "          }\n" +
         "        ]\n" +
         "      },\n" +
@@ -102,7 +102,7 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Sanduíche\",\n" +
-        "            \"value\": 8.0\n" +
+        "            \"value\": 8\n" +
         "          }\n" +
         "        ]\n" +
         "      }\n" +
@@ -110,7 +110,7 @@ public class OrderControllerFixture {
         "     \"increases\":[\n" +
         "        {\n" +
         "            \"name\": \"frete\",\n" +
-        "            \"value\": 8.0,\n" +
+        "            \"value\": 8,\n" +
         "            \"isPercentage\": false\n" +
         "          }\n" +
         "    ]\n" +
@@ -125,11 +125,11 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Hamburguer\",\n" +
-        "            \"value\": -40.0\n" +
+        "            \"value\": -40\n" +
         "          },\n" +
         "          {\n" +
         "            \"name\": \"Sobremesa\",\n" +
-        "            \"value\": 2.0\n" +
+        "            \"value\": 2\n" +
         "          }\n" +
         "        ]\n" +
         "      },\n" +
@@ -138,7 +138,7 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Sanduíche\",\n" +
-        "            \"value\": 8.0\n" +
+        "            \"value\": 8\n" +
         "          }\n" +
         "        ]\n" +
         "      }\n" +
@@ -146,7 +146,7 @@ public class OrderControllerFixture {
         "     \"increases\":[\n" +
         "        {\n" +
         "            \"name\": \"frete\",\n" +
-        "            \"value\": 8.0,\n" +
+        "            \"value\": 8,\n" +
         "            \"isPercentage\": false\n" +
         "          }\n" +
         "    ]\n" +
@@ -161,11 +161,11 @@ public class OrderControllerFixture {
         "        \"items\": [\n" +
         "          {\n" +
         "            \"name\": \"Hamburguer\",\n" +
-        "            \"value\": 40.0\n" +
+        "            \"value\": 40\n" +
         "          },\n" +
         "          {\n" +
         "            \"name\": \"Sobremesa\",\n" +
-        "            \"value\": 2.0\n" +
+        "            \"value\": 2\n" +
         "          }\n" +
         "        ]\n" +
         "      }\n" +
@@ -177,7 +177,7 @@ public class OrderControllerFixture {
   }
 
   public static String jsonResponseWithoutIncreases(){
-    return "{\"paymentLinks\":{\"Amigo\":\"https://picpay.me/Amigo/4.8\",\"Juliano\":\"https://picpay.me/Juliano/25.2\"}}";
+    return "{\"paymentLinks\":{\"Amigo\":\"https://picpay.me/Amigo/4.80\",\"Juliano\":\"https://picpay.me/Juliano/25.20\"}}";
   }
 
   public static String jsonResponseWithoutDiscounts(){
