@@ -1,105 +1,109 @@
 package com.splitpay.service;
 
-import com.splitpay.dto.OrderResponseDto;
 import com.splitpay.model.*;
-import com.splitpay.payment.PaymentLinkContext;
-import com.splitpay.payment.PicpayLinkStrategy;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CalculatorSplitService {
 
-  protected Order calculateTotalIndividualOfIncreasesAndDiscounts(Order order) {
-    double totalValueItemsOfOrder = calculateSumTotalItemsOfOrder(order);
-    double totalIncreases = calculateTotalIncreasesOfOrder(order);
-    double totalDiscounts = calculateTotalDiscountsOfOrder(order);
+    protected Order calculateTotalIndividualOfIncreasesAndDiscounts(Order order) {
+        BigDecimal totalValueItemsOfOrder = calculateSumTotalItemsOfOrder(order);
+        BigDecimal totalIncreases = calculateTotalIncreasesOfOrder(order);
+        BigDecimal totalDiscounts = calculateTotalDiscountsOfOrder(order);
 
-    order.getParticipants().forEach(participant -> {
-      ParticipantFinancials financials = participant.getFinancials();
-      financials.setSumValueTotalOfItems(calculateSumTotalValueItems(participant.getItems()));
-      calculateIndividualPercentageOfTotal(financials, totalValueItemsOfOrder);
-      calculateTotalIndividualIncrease(financials, totalIncreases);
-      calculateTotalIndividualDiscount(financials, totalDiscounts);
-      calculateDifferenceIncreaseAndDiscount(financials);
-      calculateTotalIndividualExpense(financials);
-    });
+        order.getParticipants().forEach(participant -> {
+            ParticipantFinancials financials = participant.getFinancials();
+            financials.setSumValueTotalOfItems(calculateSumTotalValueItems(participant.getItems()));
+            calculateIndividualPercentageOfTotal(financials, totalValueItemsOfOrder);
+            calculateTotalIndividualIncrease(financials, totalIncreases);
+            calculateTotalIndividualDiscount(financials, totalDiscounts);
+            calculateDifferenceBetweenOperations(financials);
+            calculateTotalIndividualExpense(financials);
+        });
 
-    return order;
-  }
-
-  private void calculateTotalIndividualDiscount(ParticipantFinancials financials, double totalDiscounts) {
-    double totalIndividualDiscount = financials.getIndividualPercentage() * totalDiscounts;
-    financials.setTotalIndividualDiscount(totalIndividualDiscount);
-  }
-
-  private void calculateDifferenceIncreaseAndDiscount(ParticipantFinancials financials) {
-    double differenceIncreaseAndDiscount = financials.getTotalIndividualIncrease() - financials.getTotalIndividualDiscount();
-    double formattedDifference = Math.round(Math.abs(differenceIncreaseAndDiscount) * 100.0) / 100.0;
-    financials.setDifferenceIncreaseAndDiscountIndividual(formattedDifference);
-  }
-
-  private void calculateTotalIndividualExpense(ParticipantFinancials financials) {
-    double totalPaidParticipant = (financials.getSumValueTotalOfItems() + financials.getTotalIndividualIncrease()) - financials.getTotalIndividualDiscount();
-    double totalIndividualExpense = Math.round(totalPaidParticipant * 100.0) / 100.0;
-    financials.setTotalIndividualExpense(totalIndividualExpense);
-  }
-
-  private void calculateTotalIndividualIncrease(ParticipantFinancials financials, double totalIncreases) {
-    double totalIndividualIncrease = financials.getIndividualPercentage() * totalIncreases;
-    financials.setTotalIndividualIncrease(totalIndividualIncrease);
-  }
-
-  private void calculateIndividualPercentageOfTotal(ParticipantFinancials financials, double totalValueItemsOfOrder) {
-    double individualPercentage = financials.getSumValueTotalOfItems() / totalValueItemsOfOrder;
-    financials.setIndividualPercentage(individualPercentage);
-  }
-
-  protected double calculateTotalIncreasesOfOrder(Order order) {
-    double totalIncreases = 0.0;
-
-    if (order.getIncreases() != null) {
-      for (Increase increase : order.getIncreases()) {
-        if (increase.isPercentage()) {
-          totalIncreases += (increase.getValue()) * calculateSumTotalItemsOfOrder(order);
-        } else {
-          totalIncreases += increase.getValue();
-        }
-      }
+        return order;
     }
 
-    return totalIncreases;
-  }
 
-  protected double calculateTotalDiscountsOfOrder(Order order) {
-    double totalDiscounts = 0.0;
-
-    if (order.getDiscounts() != null) {
-      for (Discount discount : order.getDiscounts()) {
-        if (discount.isPercentage()) {
-          totalDiscounts += (discount.getValue()) * calculateSumTotalItemsOfOrder(order);
-        } else {
-          totalDiscounts += discount.getValue();
-        }
-      }
+    private void calculateDifferenceBetweenOperations(ParticipantFinancials financials) {
+        BigDecimal differenceIncreaseAndDiscount = financials.getTotalIndividualIncrease().subtract(financials.getTotalIndividualDiscount());
+        financials.setDifferenceIncreaseAndDiscountIndividual(differenceIncreaseAndDiscount);
     }
 
-    return totalDiscounts;
-  }
+    private void calculateTotalIndividualExpense(ParticipantFinancials financials) {
+        BigDecimal totalPaidParticipant = (financials.getSumValueTotalOfItems().add(financials.getTotalIndividualIncrease())).subtract(financials.getTotalIndividualDiscount());
+        financials.setTotalIndividualExpense(totalPaidParticipant);
+    }
 
-  protected double calculateSumTotalValueItems(List<Item> items) {
-    return items.stream()
-        .mapToDouble(Item::getValue)
-        .sum();
-  }
 
-  protected double calculateSumTotalItemsOfOrder(Order order) {
-    return order.getParticipants().stream()
-        .flatMap(participant -> participant.getItems().stream())
-        .mapToDouble(Item::getValue)
-        .sum();
-  }
+    private void calculateTotalIndividualDiscount(ParticipantFinancials financials, BigDecimal totalDiscounts) {
+        financials.setTotalIndividualDiscount(calculateTotalIndividualOperations(financials, totalDiscounts));
+    }
+
+    private void calculateTotalIndividualIncrease(ParticipantFinancials financials, BigDecimal totalIncreases) {
+        financials.setTotalIndividualIncrease(calculateTotalIndividualOperations(financials, totalIncreases));
+    }
+
+    private BigDecimal calculateTotalIndividualOperations(ParticipantFinancials financials, BigDecimal totalOperations) {
+        BigDecimal totalIndividualOperation = financials.getIndividualPercentage().multiply(BigDecimal.ONE.add(totalOperations));
+        totalIndividualOperation = totalIndividualOperation.setScale(2, RoundingMode.HALF_UP);
+        return totalIndividualOperation;
+
+    }
+
+    private void calculateIndividualPercentageOfTotal(ParticipantFinancials financials, BigDecimal totalValueItemsOfOrder) {
+        BigDecimal individualPercentage = financials.getSumValueTotalOfItems().divide(totalValueItemsOfOrder, 2, RoundingMode.HALF_UP);
+        financials.setIndividualPercentage(individualPercentage);
+    }
+
+    protected BigDecimal calculateTotalIncreasesOfOrder(Order order) {
+        return calculateTotalOperationsOfOrder(order, order.getIncreases());
+    }
+
+    protected BigDecimal calculateTotalDiscountsOfOrder(Order order) {
+        return calculateTotalOperationsOfOrder(order, order.getDiscounts());
+    }
+
+    protected BigDecimal calculateTotalOperationsOfOrder(Order order, List<Operation> operations) {
+        BigDecimal totalOperations = BigDecimal.ZERO;
+
+        if (operations != null) {
+            for (Operation operation : operations) {
+                BigDecimal adjustmentValue = operation.getValue();
+                if (operation.isPercentage()) {
+                    BigDecimal totalItems = calculateSumTotalItemsOfOrder(order);
+                    totalOperations = totalOperations.add(adjustmentValue.multiply(totalItems));
+                } else {
+                    totalOperations = totalOperations.add(adjustmentValue);
+                }
+            }
+        }
+
+        return totalOperations;
+    }
+
+
+    protected BigDecimal calculateSumTotalValueItems(List<Item> items) {
+        return items.stream()
+                .map(Item::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    protected BigDecimal calculateSumTotalItemsOfOrder(Order order) {
+        return order.getParticipants().stream()
+                .flatMap(participant -> participant.getItems().stream())
+                .map(Item::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        /*
+        for (Participant participant : order.getParticipants()) {
+            for (Item item : participant.getItems()) {
+                total = total.add(item.getValue());
+            }
+        }*/
+    }
 }

@@ -3,13 +3,15 @@ package com.splitpay.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 public class ParticipantFinancials {
-  private double totalIndividualExpense;
-  private double totalIndividualIncrease;
-  private double totalIndividualDiscount;
-  private double individualPercentage;
-  private double differenceIncreaseAndDiscountIndividual;
-  private double sumValueTotalOfItems;
+  private BigDecimal totalIndividualExpense;
+  private BigDecimal totalIndividualIncrease;
+  private BigDecimal totalIndividualDiscount;
+  private BigDecimal individualPercentage;
+  private BigDecimal differenceIncreaseAndDiscountIndividual;
+  private BigDecimal sumValueTotalOfItems;
 }

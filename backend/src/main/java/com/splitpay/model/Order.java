@@ -13,8 +13,8 @@ public class Order {
 
   private List<Participant> participants;
 
-  private List<Increase> increases;
-  private List<Discount> discounts;
+  private List<Operation> increases;
+  private List<Operation> discounts;
 
   private double totalPriceOrder;
 

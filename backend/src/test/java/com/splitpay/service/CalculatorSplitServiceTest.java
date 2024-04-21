@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+
 @SpringBootTest
 class CalculatorSplitServiceTest {
 
@@ -24,7 +26,7 @@ class CalculatorSplitServiceTest {
 
     Order order = OrderFixture.createOrderEqualsExampleProblem();
 
-    double result = calculatorSplitService.calculateSumTotalItemsOfOrder(order);
+    BigDecimal result = calculatorSplitService.calculateSumTotalItemsOfOrder(order);
 
     Assertions.assertEquals(50.0, result);
   }
@@ -32,7 +34,7 @@ class CalculatorSplitServiceTest {
   @Test
   void testCalculateSumPriceTotalOfItemsArray1() {
 
-    double result = calculatorSplitService.calculateSumTotalValueItems( OrderFixture.createItemsParticipant1());
+    BigDecimal result = calculatorSplitService.calculateSumTotalValueItems( OrderFixture.createItemsParticipant1());
 
     Assertions.assertEquals(42.0, result);
   }
@@ -40,7 +42,7 @@ class CalculatorSplitServiceTest {
   @Test
   void testCalculateSumPriceTotalOfItemsArray2() {
 
-    double result = calculatorSplitService.calculateSumTotalValueItems(OrderFixture.createItemsParticipant2());
+    BigDecimal result = calculatorSplitService.calculateSumTotalValueItems(OrderFixture.createItemsParticipant2());
 
     Assertions.assertEquals(8, result);
   }
@@ -48,7 +50,7 @@ class CalculatorSplitServiceTest {
   @Test
   void testCalculateSumTotalIncreasesOfOrder() {
 
-    double result = calculatorSplitService.calculateTotalIncreasesOfOrder(OrderFixture.createOrderEqualsExampleProblem());
+    BigDecimal result = calculatorSplitService.calculateTotalIncreasesOfOrder(OrderFixture.createOrderEqualsExampleProblem());
 
     Assertions.assertEquals(8.0, result);
   }
@@ -56,7 +58,7 @@ class CalculatorSplitServiceTest {
   @Test
   void testCalculateTotalDiscountsOfOrder() {
 
-    double result = calculatorSplitService.calculateTotalDiscountsOfOrder(OrderFixture.createOrderEqualsExampleProblem());
+    BigDecimal result = calculatorSplitService.calculateTotalDiscountsOfOrder(OrderFixture.createOrderEqualsExampleProblem());
 
     Assertions.assertEquals(20.0, result);
   }

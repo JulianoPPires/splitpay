@@ -4,21 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Discount {
-
-  private String name;
-  private Double value;
-  private boolean isPercentage;
-
-  public Double getValue() {
-
-    if (isPercentage) {
-      return value / 100.0;
-    } else {
-      return value;
-    }
-  }
+public class Discount extends Operation {
 }
