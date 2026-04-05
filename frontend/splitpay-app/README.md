@@ -39,3 +39,5 @@ Siga as instruções na interface da aplicação para interagir com ela de acord
 ### Conclusão
 
 Agora você está pronto para executar e interagir com a aplicação frontend Vue.js. Se precisar de mais informações ou ajuda, consulte a documentação do Vue.js ou entre em contato com o desenvolvedor. Divirta-se! 🚀
+
+Esse é apenas um exemplo de teste
